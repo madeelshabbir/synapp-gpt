@@ -1,0 +1,107 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.scroll_bar
+{
+  overflow-y: scroll;
+  height: 50px;
+ 
+  width: 100%;
+  position: absolute;
+  width: 800px;
+  height: 300px;
+}
+.search_list{
+  margin-bottom: 4px;
+  border-bottom: 1px solid #f3f6f7;
+  padding: 7px;
+
+}
+.tableContainer{
+ 
+  border-radius: 20px;
+  height: 244px;
+  padding: 0 10px 10px 10px;
+  overflow: scroll;
+}
+
+/* .scrollable-body tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+} */
+
+
+
+/* .progress-bar {
+    width: 100%;
+    height: 10px;
+    background-color: #ccc;
+  }
+  
+  .progress-bar-fill {
+    height: 100%;
+    background-color: #37f;
+    width: 0;
+    transition: width 0.2s ease-in-out;
+  } */
+  .progress-bar {
+    position: relative;
+    width: 50px;
+    height: 50px;
+    z-index: 9;
+
+   
+  }
+  
+  .progress-bar-circle {
+    position: absolute;
+    top: -36vh;
+    left: 100%;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 8px solid #ccc;
+  }
+  
+  .progress-bar-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 8px solid #37f;
+    border-top-color: transparent;
+    animation: progress-bar-animation 2s linear infinite;
+  }
+  
+  .progress-bar-text {
+    position: absolute;
+    top: -33vh;
+    left: 50%;
+    width: 240px;
+    transform: translate(-50%, -50%);
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  .my{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+   
+  }
+  
+  @keyframes progress-bar-animation {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  
