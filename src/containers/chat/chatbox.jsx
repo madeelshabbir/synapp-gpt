@@ -40,7 +40,7 @@ export const ChatBox = ({
     if (e.key === "Enter") {
       onEnterSubmit();
       handleCloseFront();
-      
+
     }
   };
 
@@ -151,18 +151,13 @@ export const ChatBox = ({
                             <div className="flex space-x-1 ">
                               <FaRegFolderOpen className="text-xl" />{" "}
                               <span className="text-xs">Sources(s)</span>
-                              {/* {items.sources==()?(
-                                 <span className="text-xs"></span>
-
-                              ):
-                              (
-                                <span className="text-xs">Sources(s)</span>
-                              )} */}
                             </div>
                             <div className="grid grid-cols-2 gap-1 text-xs">
                               {items.sources.map((item, index) => (
-                                <div key={index}>{item}</div>
-                                // && items?.message_by !== user?.email &&
+                                <div key={index}>
+                                  <a href={items.attachment[index]} target="_blank">{item}</a>
+                                  {index < items.sources.length - 1 && ', '}
+                                </div>
                               ))}
                             </div>
                           </div>
@@ -194,7 +189,7 @@ export const ChatBox = ({
           <button
             type="submit"
             className="cursor-pointer font-semibold rounded-md h-7 w-28 text-sm md:text-normal  bg-aqua"
-            
+
           >
             Envoyer
           </button>

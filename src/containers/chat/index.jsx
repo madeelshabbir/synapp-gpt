@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import { Client, Databases, Query } from "appwrite";
+
 import { ChatBox } from "./chatbox";
 import Navbar from "../../Components/navbar/Navbar";
 import AttentionNote from "../../Components/AttentionNote/AttentionNote";
@@ -6,19 +8,13 @@ import Button from "../../Components/Button/Button";
 import { Faq } from "./faq";
 import { AboutUs } from "./aboutUs";
 import { UserUpdate } from "./userProfile";
-//import { useLocation } from "react-router-dom";
 import { SubUnsubUsers } from "./SubUnsubUsers";
 import { SubscriptionModal } from "../../Components/modal/SubscriptionModal";
 import { FaCheck, FaEdit, FaTimes } from "react-icons/fa";
 import { ImBin } from "react-icons/im";
-//import { useDispatch, useSelector } from "react-redux";
-//import { Question } from "../../redux/actions/QuestionActions";
-//import { GetSubciberAction } from "../../redux/actions/AdminActions";
 import { ApiServer } from "../../ApiConstant";
 import axios from "axios";
-import { Subscribed } from "./subscribed";
 import { ChatTooltip } from "../../Components/Charts/tooltip";
-import { Client, Databases, Query, Account } from "appwrite";
 export const ChatComponent = () => {
   const username = localStorage.getItem("username");
   const messagesEndRef = useRef(null);
@@ -37,7 +33,6 @@ export const ChatComponent = () => {
   const [subscribed, setSubscribed] = useState(null);
   const [subsInfoModal, setSubsInfoModal] = useState(true);
   const [prompts, setPrompts] = useState([]);
-  //const location = useLocation();
   const [promptSelected, setPromptSelected] = useState();
   const [editPromptSelected, setEditPromptSelected] = useState(false);
   const [editPromptText, setEditPromptText] = useState();
@@ -46,7 +41,6 @@ export const ChatComponent = () => {
   const [question, setQuestion] = useState(0);
   const [textt, setTextt] = useState(null);
   const [check, setCheck] = useState(4);
-  //const dispatch = useDispatch();
   const [ipAddress, setIPAddress] = useState("");
   const [thumbsUp, setThumbsUp] = useState(false);
   const [thumbsDown, setThumbsDown] = useState(false);
@@ -60,134 +54,86 @@ export const ChatComponent = () => {
     .setProject('64b4cb0d1b60dd5e3a99');
 
   const databases = new Databases(client);
-
-
   const SubmitQuestion = async (formData) => {
-    const access_token = localStorage.getItem('access_token');
     try {
-
       const response = await axios.post(ApiServer + '/api/admin/question/',
         formData,
       );
-
-      const answer = response.data
-
+      const answer = response.data;
       if (answer) {
-       
         const newMessage = {
           DateAndtime: Date.now(),
           message: answer.data,
           sources: answer.sources,
-          message_by: "expbilal@gmail.com",
-          attachment: true,
+          message_by: answer.message_by,
+          attachment: answer.attachments,
           status: -1,
           id: answer.id,
         };
         setChatWith((prevState) => [...prevState, newMessage]);
 
-        // Retrieve the last item
-        const lastItem = chatWith[chatWith.length];
-        
-
-        if (answer) {
-       
-          //const myquestion = lastItem["message"];
-          let myquestion = answer.question;
-
-          let clone = [...prompts];
-          const MAX_WORDS = 5;
-
-          const words = myquestion.split(" ").filter(Boolean); // Split the string by spaces and remove empty strings
-          const wordCount = words.length;
-          let truncatedAnswer = "";
-          let remainingWords = "";
-          if (wordCount <= 5) {
-            truncatedAnswer = myquestion
-              .split(" ")
-              .slice(0, MAX_WORDS)
-              .join(" ");
-          } else {
-            truncatedAnswer =
-              myquestion.split(" ").slice(0, MAX_WORDS).join(" ") +
-              "...";
-            remainingWords = myquestion
-              .split(" ")
-              .slice(MAX_WORDS)
-              .join(" ");
-          }
-
-          const question = {
-            DateAndtime: Date.now(),
-            message: truncatedAnswer,
-            message_by: user?.email,
-            attachment: false,
-            tooltipContent: remainingWords,
-            tooltip: true,
-            status: -1,
-            id: answer.id,
-            truncatedAnswer: truncatedAnswer,
-            answer: answer.data,
-            question: myquestion,
-            // message_by: "hussain@gmail.com",
-            // attachment: false,
-          };
-
-          // clone.push(`Prompt ${index}`);
-          let cont_check = false;
-          for (let item of clone) {
-            let itemm=item
-            if (itemm.truncatedAnswer == "New Prompt")
-            {
-
-
-
-              item.DateAndtime = Date.now();
-              item.message = truncatedAnswer;
-              item.message_by = user?.email;
-              item.attachment = false;
-              item.tooltipContent = remainingWords;
-              item.tooltip = true;
-              item.status = -1;
-              item.id = answer.id;
-              item.truncatedAnswer = truncatedAnswer;
-              item.answer = answer.data;
-              item.question = myquestion;
-              // message_by: "hussain@gmail.com",
-              // attachment: false,
-              cont_check = true;
-              break;
-
-            }
-
-          }
-
-          if (!cont_check) {
-
-            clone.push(question);
-
-            setPrompts(clone);
-
-          }
-
-
+        let myquestion = answer.question;
+        let clone = [...prompts];
+        const MAX_WORDS = 5;
+        const words = myquestion.split(" ").filter(Boolean);
+        const wordCount = words.length;
+        let truncatedAnswer = "";
+        let remainingWords = "";
+        if (wordCount <= MAX_WORDS) {
+          truncatedAnswer = myquestion
+            .split(" ")
+            .slice(0, MAX_WORDS)
+            .join(" ");
+        } else {
+          truncatedAnswer =
+            myquestion.split(" ").slice(0, MAX_WORDS).join(" ") +
+            "...";
+          remainingWords = myquestion
+            .split(" ")
+            .slice(MAX_WORDS)
+            .join(" ");
         }
 
+        const question = {
+          DateAndtime: Date.now(),
+          message: truncatedAnswer,
+          message_by: user?.email,
+          attachment: false,
+          tooltipContent: remainingWords,
+          tooltip: true,
+          status: -1,
+          id: answer.id,
+          truncatedAnswer: truncatedAnswer,
+          answer: answer.data,
+          question: myquestion
+        };
 
-        //setPrompts(prevState => [...prevState, newMessage]);
-        // window.location.reload();
-      } 
+        let cont_check = false;
+        const newItem = clone.find(item => item.truncatedAnswer === "New Prompt");
+
+        if (newItem) {
+          newItem.DateAndtime = Date.now();
+          newItem.message = truncatedAnswer;
+          newItem.message_by = user?.email;
+          newItem.attachment = false;
+          newItem.tooltipContent = remainingWords;
+          newItem.tooltip = true;
+          newItem.status = -1;
+          newItem.id = answer.id;
+          newItem.truncatedAnswer = truncatedAnswer;
+          newItem.answer = answer.data;
+          newItem.question = myquestion;
+          cont_check = true;
+        }
+        if (!cont_check) {
+          clone.push(question);
+          setPrompts(clone);
+        }
+      }
     }
-
-
-    // ... do something with the response data
     catch (error) {
-     
-
       console.error(error);
-
-      //alert("Error")
       console.log("profilebb error");
-      // ... handle the error
     }
   };
 
@@ -215,10 +161,10 @@ export const ChatComponent = () => {
 
         }
 
-        
+
         search = ipAddress
       }
-    
+
 
       var bodyFormData = new FormData();
       const client = new Client();
@@ -245,13 +191,13 @@ export const ChatComponent = () => {
 
 
       promise.then(function (response) {
-       
+
         let data = []
 
         if (username) {
           const currentDate = new Date();
           const currentISOString = formatToISO(currentDate);
-        
+
           let today = currentISOString.split('T')[0] + 'T00:00:00.000+00:00'
           const dataList = response['documents']
           data = dataList.filter((obj) => {
@@ -377,7 +323,7 @@ export const ChatComponent = () => {
     }, function (error) {
       console.log(error); // Failure
     });
-   
+
   };
 
   useEffect(() => {
@@ -457,7 +403,7 @@ export const ChatComponent = () => {
         } else {
           //dispatch(Question(bodyFormData));
           setQuestion(question + 1);
-    
+
           arr.push({
             DateAndtime: Date.now(),
             message: newMessage?.current?.value,
@@ -468,7 +414,7 @@ export const ChatComponent = () => {
           setSubsInfoModal(false);
 
           setChatWith(arr);
-      
+
           SubmitQuestion(bodyFormData);
 
         }
@@ -520,7 +466,7 @@ export const ChatComponent = () => {
           // dispatch(Question(bodyFormData));
 
           setQuestion(question + 1);
-        
+
           arr.push({
             DateAndtime: Date.now(),
             message: newMessage?.current?.value,
@@ -531,7 +477,7 @@ export const ChatComponent = () => {
           setcount(count + 1);
 
           setChatWith(arr);
-       
+
           SubmitQuestion(bodyFormData);
 
         }
@@ -544,7 +490,7 @@ export const ChatComponent = () => {
 
 
     const promise = databases.updateDocument('64b5432b9e32fda9235a', '64b641e090dc4b18246a', id, { "status": status });
-   
+
   };
   const handleThumbsUp = (id) => {
     if (!thumbsDown && !thumbsUp || thumbsDown && !thumbsUp) {
@@ -663,7 +609,7 @@ export const ChatComponent = () => {
 
       //clone.push(`Prompt ${index}`);
       clone.push(question);
-    
+
       //clone.push(`Prompt ${index}`);
 
       setPrompts(clone);
@@ -715,7 +661,7 @@ export const ChatComponent = () => {
     setSubsInfoModal(false);
     let arr = [];
     const check_value = item.truncatedAnswer;
-   
+
     if (check_value == 'New Prompt') {
 
     }
@@ -741,7 +687,7 @@ export const ChatComponent = () => {
       setChatWith(arr);
 
     }
-    
+
 
 
     //setPromptSelected(index);
@@ -854,7 +800,7 @@ export const ChatComponent = () => {
               >
                 Current Prompt
               </div>
-              
+
               <div className="text-sm w-full font-medium px-4 bg-white py-2 rounded-md">
                 Prompt 2
               </div>
