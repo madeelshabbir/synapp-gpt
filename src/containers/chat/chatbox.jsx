@@ -81,7 +81,7 @@ export const ChatBox = ({
                 <div
                   key={id}
                   className={`flex flex-row  items-center gap-2   ${
-                    items?.message_by == user.email
+                    items?.message_by == user
                       ? "justify-end"
                       : "justify-start"
                   }`}
@@ -90,7 +90,7 @@ export const ChatBox = ({
                     {items?.message && (
                       <div className="space-y-1.5">
                         <div className="flex items-center space-x-3">
-                          {items?.message_by !== user?.email && (
+                          {items?.message_by !== user && (
                             <img
                               src={ASSETS.PROFILES.ROBO}
                               alt=""
@@ -101,7 +101,7 @@ export const ChatBox = ({
                           <div
                             ref={messagesEndRef}
                             className={`px-4 py-1.5  rounded-md ${
-                              items?.message_by !== user?.email
+                              items?.message_by !== user
                                 ? "bg-textSenderBG"
                                 : "bg-textUserBG"
                             }`}
@@ -123,7 +123,7 @@ export const ChatBox = ({
                           </div>
 
                           {items.attachment &&
-                            items?.message_by !== user?.email && (
+                            items?.message_by !== user && (
                               <div className="mr-2 flex items-center space-x-1">
                                 {/* <RiThumbUpLine />
                               <RiThumbDownLine /> */}

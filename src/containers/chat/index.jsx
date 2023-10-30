@@ -27,17 +27,15 @@ export const ChatComponent = () => {
   const [PromtLimitmodal, setPromtLimitmodal] = useState(false);
   const [chatWith, setChatWith] = useState([]);
   const [promptchat, setPromptChat] = useState([]);
-  const [user, setUser] = useState({
-    email: "rimsha@gmail.com",
-  });
+  const [user, setUser] = useState(localStorage.getItem('username'));
   const [subscribed, setSubscribed] = useState(null);
   const [subsInfoModal, setSubsInfoModal] = useState(true);
   const [prompts, setPrompts] = useState([]);
   const [promptSelected, setPromptSelected] = useState();
   const [editPromptSelected, setEditPromptSelected] = useState(false);
   const [editPromptText, setEditPromptText] = useState();
-  const [NumberofSubcriber, setNumberofSubcriber] = useState("20");
-  const [NumberofUnsubcriber, setNumberofUnsubcriber] = useState(2);
+  const [NumberofSubcriber, setNumberofSubcriber] = useState('');
+  const [NumberofUnsubcriber, setNumberofUnsubcriber] = useState('');
   const [question, setQuestion] = useState(0);
   const [textt, setTextt] = useState(null);
   const [check, setCheck] = useState(4);
@@ -47,13 +45,7 @@ export const ChatComponent = () => {
   const [count, setcount] = useState(0);
 
   const access_token = localStorage.getItem("access_token");
-  const client = new Client();
 
-  client
-    .setEndpoint('https://cloud.appwrite.io/v1')
-    .setProject('64b4cb0d1b60dd5e3a99');
-
-  const databases = new Databases(client);
   const SubmitQuestion = async (formData) => {
     try {
       const response = await axios.post(ApiServer + '/api/admin/question/',
@@ -97,7 +89,7 @@ export const ChatComponent = () => {
         const question = {
           DateAndtime: Date.now(),
           message: truncatedAnswer,
-          message_by: user?.email,
+          message_by: user,
           attachment: false,
           tooltipContent: remainingWords,
           tooltip: true,
@@ -114,7 +106,7 @@ export const ChatComponent = () => {
         if (newItem) {
           newItem.DateAndtime = Date.now();
           newItem.message = truncatedAnswer;
-          newItem.message_by = user?.email;
+          newItem.message_by = user;
           newItem.attachment = false;
           newItem.tooltipContent = remainingWords;
           newItem.tooltip = true;
@@ -149,198 +141,102 @@ export const ChatComponent = () => {
   }
 
 
-  useEffect(() => {
-    const fetchChatData = async () => {
-      const username = localStorage.getItem("username");
-      let search = localStorage.getItem("username");
-      //await account.deleteSession('current');
-      //setUser(null)
-      if (username == null) {
-        if (!ipAddress) {
-          fetchIPAddress();
+  const fetchChatData = async () => {
+    let data;
 
-        }
+    const resp = await axios.get(`${ApiServer}/api/admin/chat-history?query=${user}`);
+    setcount(resp.data.data.total);
+    data = resp.data.data.documents;
+    let clone = [];
 
-
-        search = ipAddress
+    data.forEach((item) => {
+      const MAX_WORDS = 5;
+      const myquestion = item.question;
+      const words = myquestion.split(" ").filter(Boolean);
+      const wordCount = words.length;
+      let truncatedAnswer = "";
+      let remainingWords = "";
+      if (wordCount <= 5) {
+        truncatedAnswer = item.question.split(" ").slice(0, MAX_WORDS).join(" ");
+      } else {
+        truncatedAnswer =
+          item.question.split(" ").slice(0, MAX_WORDS).join(" ") + "...";
+        remainingWords = item.question.split(" ").slice(MAX_WORDS).join(" ");
       }
 
-
-      var bodyFormData = new FormData();
-      const client = new Client();
-
-      client
-        .setEndpoint('https://cloud.appwrite.io/v1')
-        .setProject('64b4cb0d1b60dd5e3a99');
-
-      const databases = new Databases(client);
-
-
-
-      let promise = databases.listDocuments(
-        '64b5432b9e32fda9235a', '64b641e090dc4b18246a',
-
-        [
-          Query.equal('user_info', search),
-
-        ]
-      );
-
-
-
-
-
-      promise.then(function (response) {
-
-        let data = []
-
-        if (username) {
-          const currentDate = new Date();
-          const currentISOString = formatToISO(currentDate);
-
-          let today = currentISOString.split('T')[0] + 'T00:00:00.000+00:00'
-          const dataList = response['documents']
-          data = dataList.filter((obj) => {
-            const objDate = obj.created_at.split('T')[0]; // Get only the date part of the object's 'created_at' (YYYY-MM-DD)
-            return obj.created_at === today;
-          });
-        }
-        else {
-          data = response['documents'];
-        }
-
-
-
-
-
-        const length = data.length;
-        setcount(length);
-
-        const arry = [];
-        let arr = [...chatWith];
-        let myarr = [...promptchat];
-        let clone = [...prompts];
-        data.forEach((item) => {
-          const MAX_WORDS = 5; // Maximum number of words to show
-
-          const myquestion = item.question;
-          const words = myquestion.split(" ").filter(Boolean); // Split the string by spaces and remove empty strings
-          const wordCount = words.length;
-          let truncatedAnswer = "";
-          let remainingWords = "";
-          if (wordCount <= 5) {
-            truncatedAnswer = item.question
-              .split(" ")
-              .slice(0, MAX_WORDS)
-              .join(" ");
-          } else {
-            truncatedAnswer =
-              item.question.split(" ").slice(0, MAX_WORDS).join(" ") + "...";
-            remainingWords = item.question
-              .split(" ")
-              .slice(MAX_WORDS)
-              .join(" ");
-          }
-
-          //const truncatedAnswer = item.question.split(' ').slice(0, MAX_WORDS).join(' ')+"...";
-
-          // const remainingWords = item.question.split(' ').slice(MAX_WORDS).join(' ');
-          const question = {
-            DateAndtime: item.created_at,
-            message: truncatedAnswer,
-            message_by: user?.email,
-            attachment: false,
-            tooltipContent: remainingWords,
-            tooltip: true,
-            status: item.status,
-            id: item.$id,
-            truncatedAnswer: truncatedAnswer,
-            answer: item.answer,
-            question: item.question,
-            // message_by: "hussain@gmail.com",
-            // attachment: false,
-          };
-
-          // clone.push(`Prompt ${index}`);
-          clone.push(question);
-        });
-
-        setPrompts(clone);
-
-
-      }, function (error) {
-        console.log(error);
-      });
-
-
-
-    };
-
-    fetchChatData();
-  }, [ipAddress]);
-
-  useEffect(() => {
-    const fetchIPAddress = async () => {
-      try {
-        const response = await fetch("https://api.ipify.org/?format=json");
-        const data = await response.json();
-
-        if (data) {
-          setIPAddress(data.ip);
-        }
-      } catch (error) {
-        //console.error('Error fetching IP address:', error);
-        console.log("");
-      }
-    };
-
-    fetchIPAddress();
-  }, []);
-  const fetchIPAddress = async () => {
-    try {
-      const response = await fetch("https://api.ipify.org/?format=json");
-      const data = await response.json();
-
-      if (data) {
-        setIPAddress(data.ip);
-      }
-    } catch (error) {
-      //console.error('Error fetching IP address:', error);
-      console.log("");
-    }
-  };
-
-
-
-  const fetchDataa = async () => {
-
-
-    const promise = databases.getDocument('64b5432b9e32fda9235a', '64b6a57a8ca13cf4ab29', '1');
-
-    promise.then(function (response) {
-      setNumberofSubcriber(response.subcriber);
-      setNumberofUnsubcriber(response.unsubcriber);
-    }, function (error) {
-      console.log(error); // Failure
+      const question = {
+        DateAndtime: item.created_at,
+        message: truncatedAnswer,
+        message_by: user,
+        attachment: true,
+        tooltipContent: remainingWords,
+        tooltip: true,
+        status: item.status,
+        id: item.$id,
+        truncatedAnswer: truncatedAnswer,
+        answer: item.answer,
+        question: item.question,
+      };
+      clone.push(question);
     });
+    setPrompts(clone);
+  };
 
+  // const fetchIPAddress = async () => {
+  //   try {
+  //     const response = await fetch("https://api.ipify.org/?format=json");
+  //     const data = await response.json();
+
+  //     if (data) {
+  //       setIPAddress(data.ip);
+  //       if (localStorage.getItem('username') == null || localStorage.getItem('username') == "") {
+  //         setUser(data.ip);
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.log("");
+  //   }
+  // };
+
+
+  const fetchCountOfUsers = async () => {
+    const resp = await axios.get(`${ApiServer}/api/admin/subcriber`)
+    if (!subscribed) {
+      setNumberofUnsubcriber(resp.data.unsubcriber);
+    } else {
+      setNumberofSubcriber(resp.data.subcriber);
+    }
   };
 
   useEffect(() => {
-    // setChatWith([]);
+    const fetchData = async () => {
+      if (!subscribed) {
+        try {
+          const response = await fetch("https://api.ipify.org/?format=json");
+          const data = await response.json();
+          if (data && data.ip) {
+            setIPAddress(data.ip);
+            if (!localStorage.getItem('username') || localStorage.getItem('username') === "") {
+              setUser(data.ip);
+              fetchChatData();
+            }
+          }
+          fetchCountOfUsers();
+          setTextt(`${count}/${NumberofUnsubcriber} messages restants`);
+          setCheck(NumberofUnsubcriber);
+        } catch (error) {
+          console.error("Error fetching IP address:", error);
+        }
+      } else {
+        fetchCountOfUsers();
+        setCheck(NumberofSubcriber);
+        setTextt(`${count}/${NumberofSubcriber} messages restants`);
+      }
+    };
 
-    if (!subscribed) {
-      setChatWith([]);
-      fetchDataa();
-      setTextt(`${count}/${NumberofUnsubcriber} messages restants`);
-      setCheck(NumberofUnsubcriber);
-    } else {
-      setChatWith([]);
-      fetchDataa();
-      setCheck(NumberofSubcriber);
-      setTextt(`${count}/${NumberofSubcriber} messages restants`);
-    }
-  }, [subscribed]);
+    fetchData();
+
+  }, [subscribed, user]);
 
   // const access_token=localStorage.getItem("access_token");
 
@@ -407,7 +303,7 @@ export const ChatComponent = () => {
           arr.push({
             DateAndtime: Date.now(),
             message: newMessage?.current?.value,
-            message_by: user?.email,
+            message_by: user,
             attachment: false,
           });
           setcount(count + 1);
@@ -470,7 +366,7 @@ export const ChatComponent = () => {
           arr.push({
             DateAndtime: Date.now(),
             message: newMessage?.current?.value,
-            message_by: user?.email,
+            message_by: user,
             attachment: false,
           });
 
@@ -592,7 +488,7 @@ export const ChatComponent = () => {
       const question = {
         DateAndtime: "",
         message: "",
-        message_by: user?.email,
+        message_by: user,
         attachment: false,
         tooltipContent: "",
         tooltip: true,
@@ -601,9 +497,6 @@ export const ChatComponent = () => {
         truncatedAnswer: "New Prompt",
         answer: "",
         question: "New Prompt",
-
-        // message_by: "hussain@gmail.com",
-        // attachment: false,
       };
 
 
@@ -644,9 +537,6 @@ export const ChatComponent = () => {
       setShowUserProfile(false);
     }
   }, [showModal]);
-  //const userQuestion = useSelector((state) => state.userQuestion);
-  //const { answer } = userQuestion;
-
 
   const scrollToBottom = () => {
     messagesEndRef?.current?.scrollIntoView({ behaviour: "smooth" });
@@ -660,37 +550,26 @@ export const ChatComponent = () => {
   const onSelectPrompt = (item) => {
     setSubsInfoModal(false);
     let arr = [];
-    const check_value = item.truncatedAnswer;
+    const question = {
+      DateAndtime: item.created_at,
+      message: item.question,
+      message_by: user,
+      attachment: false,
+    };
+    arr.push(question);
 
-    if (check_value == 'New Prompt') {
-
-    }
-    else {
-
-      const question = {
-        DateAndtime: item.created_at,
-        message: item.question,
-        message_by: user?.email,
-        attachment: false,
-      };
-      arr.push(question);
-
-      const answer = {
-        DateAndtime: item.created_at,
-        message: item.answer,
-        message_by: "manzooor@gmail.com",
-        attachment: true,
-        status: item.status,
-        id: item.id,
-      };
-      arr.push(answer);
-      setChatWith(arr);
-
-    }
-
-
-
-    //setPromptSelected(index);
+    const answer = {
+      DateAndtime:item.$created_at,
+      message: item.answer,
+      attachment: true,
+      tooltip: true,
+      status: item.status,
+      id: item.$id,
+      answer: item.answer,
+      question: item.question
+    };
+    arr.push(answer);
+    setChatWith(arr);
   };
 
   const onDeleteSelectedPrompt = () => {
@@ -717,19 +596,10 @@ export const ChatComponent = () => {
           type={1}
           onClick={() => setPromtLimitmodal(!PromtLimitmodal)}
         />
-        // ) : (
-        //   subscribed &&
-        //   PromtLimitmodal && (
-        //     <SubscriptionModal
-        //       type={2}
-        //       onClick={() => setPromtLimitmodal(!PromtLimitmodal)}
-        //     />
-        //   )
       )}
       <Navbar
         onOpenModal={() => setShowModal(!showModal)}
         onOpenAbout={() => setShowAboutUs(!showAboutUs)}
-        // onOpenUserProfile={() => setShowUserProfile(!showUserProfile)}
         text={textt}
       />
 
@@ -795,18 +665,6 @@ export const ChatComponent = () => {
                   )}
                 </div>
               ))}
-              {/* <div
-                className="bg-textSenderBG text-sm w-full py-2 font-medium px-4 rounded-md "
-              >
-                Current Prompt
-              </div>
-
-              <div className="text-sm w-full font-medium px-4 bg-white py-2 rounded-md">
-                Prompt 2
-              </div>
-              <div className="text-sm w-full font-medium px-4 bg-white py-2 rounded-md">
-                Prompt 3
-              </div> */}
             </div>
           </div>
           <div className="ml-3">
