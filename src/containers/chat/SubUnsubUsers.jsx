@@ -1,12 +1,9 @@
 import React from "react";
 import NavBtn from "../../Components/Button/NavBtn";
 import { AiOutlineClose } from "react-icons/ai";
-import { NavLink, useNavigate } from "react-router-dom";
-//import {Logout} from '../../redux/actions/LoginActions'
-//import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from '../../utils/AuthContext'
 export const SubUnsubUsers = ({
-  type,
   onOpenModal,
   onOpenSignUp,
   onOpenFaqs,
@@ -15,19 +12,8 @@ export const SubUnsubUsers = ({
 
   const access_token = localStorage.getItem('access_token');
   const {user, logoutUser} = useAuth()
- 
-  //const dispatch = useDispatch();
-  const navigate = useNavigate();
-  
- 
-  // const navigate = useNavigate();
-  const onSignOut = async () => {
 
-    //dispatch(Logout())
-    navigate("/");
-    
-    
-  };
+  const navigate = useNavigate();
 
   return (
     <div className="flex flex-col w-3/12 space-y-2  py-4 -mt-4 pr-2">
@@ -37,7 +23,6 @@ export const SubUnsubUsers = ({
           onClick={onOpenModal}
         />
       </div>
-      {/* subscribed  */}
       {access_token != null && (
         <div className="flex flex-col space-y-2">
           <NavBtn
@@ -56,8 +41,7 @@ export const SubUnsubUsers = ({
             text="About"
             width="200px"
             bgcolor="#F4F2F2"
-            // onFunctionCalled={onOpenAboutUs}
-            onFunctionCalled={logoutUser}
+            onFunctionCalled={onOpenAboutUs}
           />
 
           <NavBtn
@@ -69,7 +53,6 @@ export const SubUnsubUsers = ({
         </div>
       )}
 
-      {/* unsubscribe  */}
       {access_token == null && (
         <div className="flex flex-col space-y-2">
           <NavBtn

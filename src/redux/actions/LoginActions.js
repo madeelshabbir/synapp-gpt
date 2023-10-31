@@ -31,24 +31,12 @@ export const login = (username, password) => async (dispatch) => {
     localStorage.setItem('access_token', data.token.access)
     localStorage.setItem('refresh_token', data.token.refresh)
     localStorage.setItem('username', data.username)
-    // useEffect(() => {
-    //   const removeAfter30Minutes = setTimeout(() => {
-    //     // Remove the data from local storage
-    //     localStorage.removeItem("access_token");
-    //   }, 29 * 60 * 1000) // 30 minutes in milliseconds
-     
-    //   return () => {
-    //     clearTimeout(removeAfter30Minutes);
-    //     //clearTimeout(removeusernameAfter30Minutes);
-    //   };
-    // }, []);
   } catch (error) {
     dispatch({
       type: USER_LOGIN_FAILURE,
       payload: error
     });
-   
-    //console.log(error.response.status);
+
   }
 };
 

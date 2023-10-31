@@ -1,32 +1,20 @@
 import React from "react";
-import { ASSETS } from "../../assets/path";
-import { BsChatDots, BsInfoCircle } from "react-icons/bs";
-import { FiSearch } from "react-icons/fi";
+import { BsInfoCircle } from "react-icons/bs";
 import { BiSun } from "react-icons/bi";
 import { TbBellRinging } from "react-icons/tb";
-import NavBtn from "../Button/NavBtn";
 import { AiOutlineUser } from "react-icons/ai";
-import Search from "../search/Search";
-import { NavLink } from "react-router-dom";
-
 import { useNavigate } from "react-router-dom";
+
+import { ASSETS } from "../../assets/path";
 
 const Navbar = ({
   signup,
   Conversations,
   text,
-  onOpenFaqs,
-  onOpenUserProfile,
   onOpenModal,
   onOpenAbout,
 }) => {
-  const access_token = localStorage.getItem('access_token');
-  const username = localStorage.getItem('username');
-
-
-
   const navigate = useNavigate();
-
 
   const handleClick = () => {
     navigate('/')
@@ -39,30 +27,14 @@ const Navbar = ({
           : "flex justify-between px-4 lg:px-8 py-5"
         } bg-bgCremo items-center`}
     >
-      {/* logo  */}
       <div onClick={handleClick}>
-
         <img src={ASSETS.LOGO} className="h-4 sm:h-5 md:h-6 lg:h-8" />
-
       </div>
 
       {!signup && (
         <>
-          {/* coversation/comunities  */}
           <div className="flex gap-10">
             <div className="text-navElement text-xs flex gap-2 font-bold items-center underline">
-            {username == "admin@synapp-messaging.com"  || username == "admin@example.com"  || username == "admin_sacha@example.com" ? (
-              null
-            
-                ) :  (
-                  <span>
-                  <BsChatDots className="font-extrabold text-sm sm:text-normal md:text-base" />
-                </span>
-                )}
-
-
-
-
               {text}
             </div>
             <div className="text-navElement flex gap-2 font-bold text-xs">
@@ -81,19 +53,6 @@ const Navbar = ({
             </div>
           </div>
 
-          {/* searchbar  */}
-          <div>
-          {username == "admin@synapp-messaging.com"  || username == "admin@example.com"  || username == "admin_sacha@example.com" ? (
-              null
-            
-                ) :  (
-                  <Search></Search>
-                )}
-
-            
-          </div>
-
-          {/* icons  */}
           {Conversations && (
 
             <div className="flex gap-8">
@@ -118,7 +77,6 @@ const Navbar = ({
                 />
               </span>
               <span>
-
                 <AiOutlineUser
                   className="cursor-pointer text-normal sm:text-lg md:text-xl lg:text-2xl xl:text-3xl"
                   onClick={onOpenModal}
@@ -128,17 +86,6 @@ const Navbar = ({
           )}
         </>
       )}
-      {/* nav button  */}
-      {/* {signup && (
-        <div className="flex gap-5">
-          <div>
-            <NavBtn text="Se connecter" bgcolor="#004A54" color="white" />
-          </div>
-          <div>
-            <NavBtn text="S’inscrire" bgcolor="#A1FEDA" />
-          </div>
-        </div>
-      )} */}
     </div>
   );
 };

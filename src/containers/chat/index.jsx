@@ -26,7 +26,6 @@ export const ChatComponent = () => {
   const [showModal, setShowModal] = useState(false);
   const [PromtLimitmodal, setPromtLimitmodal] = useState(false);
   const [chatWith, setChatWith] = useState([]);
-  const [promptchat, setPromptChat] = useState([]);
   const [user, setUser] = useState(localStorage.getItem('username'));
   const [subscribed, setSubscribed] = useState(null);
   const [subsInfoModal, setSubsInfoModal] = useState(true);
@@ -40,9 +39,9 @@ export const ChatComponent = () => {
   const [textt, setTextt] = useState(null);
   const [check, setCheck] = useState(4);
   const [ipAddress, setIPAddress] = useState("");
-  const [thumbsUp, setThumbsUp] = useState(false);
-  const [thumbsDown, setThumbsDown] = useState(false);
+
   const [count, setcount] = useState(0);
+  const [prompt, setPrompt] = useState(null);
 
   const access_token = localStorage.getItem("access_token");
 
@@ -52,6 +51,7 @@ export const ChatComponent = () => {
         formData,
       );
       const answer = response.data;
+      setPrompt(answer.prompt_id);
       if (answer) {
         const newMessage = {
           DateAndtime: Date.now(),
@@ -63,141 +63,67 @@ export const ChatComponent = () => {
           id: answer.id,
         };
         setChatWith((prevState) => [...prevState, newMessage]);
+      }
+      fetchChatData();
+    }
+    catch (error) {
+      console.error(error);
+    }
+  };
 
-        let myquestion = answer.question;
-        let clone = [...prompts];
-        const MAX_WORDS = 5;
+  const fetchChatData = async () => {
+    let data;
+    const resp = await axios.get(`${ApiServer}/api/admin/chat-history?query=${user}`);
+    setcount(resp.data.data.total);
+    data = resp.data.data.documents;
+    let prompt_array = [];
+    let prompt_id = 0;
+    const MAX_WORDS = 5;
+
+    data.forEach((item) => {
+      const myquestion = item.question;
+      if (item.prompt_id.$id != prompt_id) {
+        prompt_id = item.prompt_id.$id;
         const words = myquestion.split(" ").filter(Boolean);
         const wordCount = words.length;
         let truncatedAnswer = "";
         let remainingWords = "";
-        if (wordCount <= MAX_WORDS) {
-          truncatedAnswer = myquestion
-            .split(" ")
-            .slice(0, MAX_WORDS)
-            .join(" ");
+        if (wordCount <= 5) {
+          truncatedAnswer = item.question.split(" ").slice(0, MAX_WORDS).join(" ");
         } else {
           truncatedAnswer =
-            myquestion.split(" ").slice(0, MAX_WORDS).join(" ") +
-            "...";
-          remainingWords = myquestion
-            .split(" ")
-            .slice(MAX_WORDS)
-            .join(" ");
+            item.question.split(" ").slice(0, MAX_WORDS).join(" ") + "...";
+          remainingWords = item.question.split(" ").slice(MAX_WORDS).join(" ");
         }
-
-        const question = {
-          DateAndtime: Date.now(),
+        prompt_array.push({
+          prompt_id: prompt_id,
+          created_at: item.prompt_id.$createdAt,
           message: truncatedAnswer,
-          message_by: user,
-          attachment: false,
           tooltipContent: remainingWords,
-          tooltip: true,
-          status: -1,
-          id: answer.id,
           truncatedAnswer: truncatedAnswer,
-          answer: answer.data,
-          question: myquestion
-        };
-
-        let cont_check = false;
-        const newItem = clone.find(item => item.truncatedAnswer === "New Prompt");
-
-        if (newItem) {
-          newItem.DateAndtime = Date.now();
-          newItem.message = truncatedAnswer;
-          newItem.message_by = user;
-          newItem.attachment = false;
-          newItem.tooltipContent = remainingWords;
-          newItem.tooltip = true;
-          newItem.status = -1;
-          newItem.id = answer.id;
-          newItem.truncatedAnswer = truncatedAnswer;
-          newItem.answer = answer.data;
-          newItem.question = myquestion;
-          cont_check = true;
-        }
-        if (!cont_check) {
-          clone.push(question);
-          setPrompts(clone);
-        }
-      }
-    }
-    catch (error) {
-      console.error(error);
-      console.log("profilebb error");
-    }
-  };
-
-  function formatToISO(date) {
-    const year = date.getUTCFullYear();
-    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
-    const day = String(date.getUTCDate()).padStart(2, '0');
-    const hours = String(date.getUTCHours()).padStart(2, '0');
-    const minutes = String(date.getUTCMinutes()).padStart(2, '0');
-    const seconds = String(date.getUTCSeconds()).padStart(2, '0');
-
-    return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.000+00:00`;
-  }
-
-
-  const fetchChatData = async () => {
-    let data;
-
-    const resp = await axios.get(`${ApiServer}/api/admin/chat-history?query=${user}`);
-    setcount(resp.data.data.total);
-    data = resp.data.data.documents;
-    let clone = [];
-
-    data.forEach((item) => {
-      const MAX_WORDS = 5;
-      const myquestion = item.question;
-      const words = myquestion.split(" ").filter(Boolean);
-      const wordCount = words.length;
-      let truncatedAnswer = "";
-      let remainingWords = "";
-      if (wordCount <= 5) {
-        truncatedAnswer = item.question.split(" ").slice(0, MAX_WORDS).join(" ");
-      } else {
-        truncatedAnswer =
-          item.question.split(" ").slice(0, MAX_WORDS).join(" ") + "...";
-        remainingWords = item.question.split(" ").slice(MAX_WORDS).join(" ");
+          data: []
+        });
       }
 
       const question = {
         DateAndtime: item.created_at,
-        message: truncatedAnswer,
+        message: item.answer,
         message_by: user,
-        attachment: true,
-        tooltipContent: remainingWords,
-        tooltip: true,
+        attachment: item.attachments == null ? [] : item.attachments?.split(', ') ,
         status: item.status,
         id: item.$id,
-        truncatedAnswer: truncatedAnswer,
         answer: item.answer,
         question: item.question,
+        sources: item.sources == null ? [] : item.sources?.split(', ')
       };
-      clone.push(question);
+      const promptIndex = prompt_array.findIndex((prompt) => prompt.prompt_id === prompt_id);
+
+      if (promptIndex !== -1) {
+        prompt_array[promptIndex].data.push(question);
+      }
     });
-    setPrompts(clone);
+    setPrompts(prompt_array);
   };
-
-  // const fetchIPAddress = async () => {
-  //   try {
-  //     const response = await fetch("https://api.ipify.org/?format=json");
-  //     const data = await response.json();
-
-  //     if (data) {
-  //       setIPAddress(data.ip);
-  //       if (localStorage.getItem('username') == null || localStorage.getItem('username') == "") {
-  //         setUser(data.ip);
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.log("");
-  //   }
-  // };
-
 
   const fetchCountOfUsers = async () => {
     const resp = await axios.get(`${ApiServer}/api/admin/subcriber`)
@@ -228,6 +154,7 @@ export const ChatComponent = () => {
           console.error("Error fetching IP address:", error);
         }
       } else {
+        fetchChatData();
         fetchCountOfUsers();
         setCheck(NumberofSubcriber);
         setTextt(`${count}/${NumberofSubcriber} messages restants`);
@@ -238,7 +165,6 @@ export const ChatComponent = () => {
 
   }, [subscribed, user]);
 
-  // const access_token=localStorage.getItem("access_token");
 
   useEffect(() => {
     if (access_token) {
@@ -249,6 +175,7 @@ export const ChatComponent = () => {
       setCheck(NumberofUnsubcriber);
     }
   }, [NumberofUnsubcriber]);
+
   useEffect(() => {
     if (access_token) {
       setCheck(NumberofSubcriber);
@@ -271,15 +198,9 @@ export const ChatComponent = () => {
         !subscribed
       ) {
         setPromtLimitmodal(!PromtLimitmodal);
-      } else if (prompts.length >= NumberofSubcriber && subscribed) {
-        alert("Your are reached Your limits for today Come back Tomorrow");
+      } else if (count >= check) {
+        alert("Your have reached your limits");
       } else {
-        if (index <= check) {
-          //   let clone = [...prompts];
-          // clone.push(`Prompt ${index}`);
-          // setPrompts(clone);
-        }
-
         let arr = [...chatWith];
         var bodyFormData = new FormData();
         bodyFormData.append("question", newMessage.current.value);
@@ -289,7 +210,6 @@ export const ChatComponent = () => {
           bodyFormData.append("username", localStorage.getItem("username"));
         }
 
-        //dispatch(Question(newMessage.current.value));
         if (
           !subscribed &&
           localStorage.getItem("username") == null &&
@@ -297,7 +217,6 @@ export const ChatComponent = () => {
         ) {
           setPromtLimitmodal(!PromtLimitmodal);
         } else {
-          //dispatch(Question(bodyFormData));
           setQuestion(question + 1);
 
           arr.push({
@@ -311,14 +230,17 @@ export const ChatComponent = () => {
 
           setChatWith(arr);
 
+          if (chatWith.length == 0) {
+            bodyFormData.append('prompt_id', '');
+          } else {
+            bodyFormData.append('prompt_id', prompt);
+          }
           SubmitQuestion(bodyFormData);
 
         }
       }
     }
     newMessage.current.value = "";
-
-
   };
 
   const onEnterSubmit = () => {
@@ -332,15 +254,9 @@ export const ChatComponent = () => {
 
       ) {
         setPromtLimitmodal(!PromtLimitmodal);
-      } else if (prompts.length >= NumberofSubcriber && subscribed) {
-        alert("Your are reached Your limits for today Come back Tomorrow");
+      } else if (count >= check) {
+        alert("Your have reached your limits");
       } else {
-        if (index <= check) {
-          //   let clone = [...prompts];
-          // clone.push(`Prompt ${index}`);
-          // setPrompts(clone);
-        }
-
         let arr = [...chatWith];
         var bodyFormData = new FormData();
         bodyFormData.append("question", newMessage.current.value);
@@ -350,7 +266,6 @@ export const ChatComponent = () => {
           bodyFormData.append("username", localStorage.getItem("username"));
         }
 
-        //dispatch(Question(newMessage.current.value));
         if (
           !subscribed &&
           localStorage.getItem("username") == null &&
@@ -358,9 +273,6 @@ export const ChatComponent = () => {
         ) {
           setPromtLimitmodal(!PromtLimitmodal);
         } else {
-
-          // dispatch(Question(bodyFormData));
-
           setQuestion(question + 1);
 
           arr.push({
@@ -374,6 +286,11 @@ export const ChatComponent = () => {
 
           setChatWith(arr);
 
+          if (chatWith.length == 0) {
+            bodyFormData.append('prompt_id', '');
+          } else {
+            bodyFormData.append('prompt_id', prompt);
+          }
           SubmitQuestion(bodyFormData);
 
         }
@@ -382,107 +299,37 @@ export const ChatComponent = () => {
     newMessage.current.value = "";
   };
 
-  const updatethubstatus = async (id, status) => {
+  const handleLike = async(id, status) => {
+    status = status == true ? 1 : 0;
+    var bodyFormData = new FormData();
+    bodyFormData.append('id', id);
+    bodyFormData.append('status', status)
+    const response = await axios.put(ApiServer + '/api/admin/question/',
+      bodyFormData,
+    );
+    if (response.status == 200) {
+      const updated_chat_with = chatWith.map(item => {
+        if (item.id === id) {
+          return { ...item, status: status };
+        }
+        return item;
+      });
 
-
-    const promise = databases.updateDocument('64b5432b9e32fda9235a', '64b641e090dc4b18246a', id, { "status": status });
-
-  };
-  const handleThumbsUp = (id) => {
-    if (!thumbsDown && !thumbsUp || thumbsDown && !thumbsUp) {
-      setThumbsUp(true);
-      setThumbsDown(false);
-      setChatWith((prevChatWith) =>
-        prevChatWith.map((message) =>
-          message.id === id ? { ...message, status: 1 } : message
-        )
-      );
-      const formData = new FormData();
-      formData.append("messageid", id);
-      formData.append("status", 1);
-      updatethubstatus(id, 1);
+      setChatWith(updated_chat_with);
     }
-
-    else if (thumbsUp) {
-      setThumbsUp(false);
-      setChatWith((prevChatWith) =>
-        prevChatWith.map((message) =>
-          message.id === id ? { ...message, status: -1 } : message
-        )
-      );
-      const formData = new FormData();
-      formData.append("messageid", id);
-      formData.append("status", -1);
-      updatethubstatus(id, -1);
-
-    }
-
-    //setThumbsUp(!thumbsUp);
-    //setThumbsDown(false);
-
-
-
   };
+
   const handleCloseProfile = (id) => {
     setShowUserProfile(false);
-
   };
+
   const handleCloseFront = (id) => {
     setSubsInfoModal(false);
-
-
   };
 
-  const handleThumbsDown = (id) => {
-
-
-
-    if (!thumbsDown && !thumbsUp || !thumbsDown && thumbsUp) {
-      setThumbsDown(true);
-      setThumbsUp(false);
-      setChatWith((prevChatWith) =>
-        prevChatWith.map((message) =>
-          message.id === id ? { ...message, status: 0 } : message
-        )
-      );
-      const formData = new FormData();
-      formData.append("messageid", id);
-      formData.append("status", 0);
-      updatethubstatus(id, 0);
-      // updatethubstatus(formData);
-    }
-    else if (thumbsDown) {
-      setThumbsDown(false);
-      setChatWith((prevChatWith) =>
-        prevChatWith.map((message) =>
-          message.id === id ? { ...message, status: -1 } : message
-        )
-      );
-      const formData = new FormData();
-      formData.append("messageid", id);
-      formData.append("status", -1);
-      updatethubstatus(id, -1);
-
-    }
-
-    //setThumbsUp(!thumbsUp);
-    // setThumbsDown(false);
-
-    // setChatWith((prevChatWith) =>
-    //   prevChatWith.map((message) =>
-    //     message.id === id ? { ...message, status: -1 } : message
-    //   )
-    // );
-    // const formData = new FormData();
-    // formData.append("messageid", id);
-    // formData.append("status", 0);
-    // updatethubstatus(formData);
-  };
-  const HandleClick = (index) => {
-    if (prompts.length >= NumberofUnsubcriber && !subscribed) {
-      setPromtLimitmodal(!PromtLimitmodal);
-    } else if (prompts.length >= NumberofSubcriber && subscribed) {
-      setPromtLimitmodal(!PromtLimitmodal);
+  const HandleClick = () => {
+    if (count >= check) {
+      setPromtLimitmodal(true);
     } else {
       let clone = [...prompts];
       const question = {
@@ -499,12 +346,7 @@ export const ChatComponent = () => {
         question: "New Prompt",
       };
 
-
-      //clone.push(`Prompt ${index}`);
       clone.push(question);
-
-      //clone.push(`Prompt ${index}`);
-
       setPrompts(clone);
     }
   };
@@ -550,37 +392,36 @@ export const ChatComponent = () => {
   const onSelectPrompt = (item) => {
     setSubsInfoModal(false);
     let arr = [];
-    const question = {
-      DateAndtime: item.created_at,
-      message: item.question,
-      message_by: user,
-      attachment: false,
-    };
-    arr.push(question);
+    if (item.data && item.data.length > 0) {
+      item.data.map((it, index) => {
+        const question = {
+          DateAndtime: it.created_at,
+          message: it.question,
+          message_by: user,
+          attachment: false,
+          sources: []
+        };
 
-    const answer = {
-      DateAndtime:item.$created_at,
-      message: item.answer,
-      attachment: true,
-      tooltip: true,
-      status: item.status,
-      id: item.$id,
-      answer: item.answer,
-      question: item.question
-    };
-    arr.push(answer);
-    setChatWith(arr);
-  };
-
-  const onDeleteSelectedPrompt = () => {
-    const filteredPrompts = prompts.filter(
-      (item, index) => index !== promptSelected
-    );
-    setPrompts(filteredPrompts);
-  };
-
-  const onEditSelectedPrompt = () => {
-    setEditPromptSelected(!editPromptSelected);
+        arr.push(question);
+        const answer = {
+          DateAndtime:it.DateAndtime,
+          message: it.answer,
+          attachment: it.attachment,
+          tooltip: true,
+          status: it.status,
+          id: it.id,
+          answer: it.answer,
+          question: it.question,
+          sources: it.sources
+        };
+        arr.push(answer);
+      });
+      setPrompt(item.prompt_id);
+      setChatWith(arr);
+    } else {
+      setPrompt(null);
+      setChatWith([]);
+    }
   };
 
   const onEditPrompt = () => {
@@ -655,12 +496,6 @@ export const ChatComponent = () => {
                           {item.message}
                         </span>
                       )}
-                      {index === promptSelected && (
-                        <div className="flex items-center space-x-1 text-textgray">
-                          <FaEdit onClick={onEditSelectedPrompt} />
-                          <ImBin onClick={onDeleteSelectedPrompt} />
-                        </div>
-                      )}
                     </>
                   )}
                 </div>
@@ -678,8 +513,7 @@ export const ChatComponent = () => {
             submitHandler={submitHandler}
             onEnterSubmit={onEnterSubmit}
             chatWith={chatWith}
-            handleThumbsUp={handleThumbsUp}
-            handleThumbsDown={handleThumbsDown}
+            handleLike={handleLike}
             user={user}
             subscribed={subsInfoModal}
             setSubscribed={() => setSubsInfoModal(!subsInfoModal)}
@@ -687,7 +521,6 @@ export const ChatComponent = () => {
           />
         </div>
 
-        {/* user icon and about us  */}
         {!subscribed && showModal ? (
           <SubUnsubUsers
             onOpenModal={() => setShowModal(!showModal)}
@@ -709,14 +542,13 @@ export const ChatComponent = () => {
           )
         )}
         {showFaqs && <Faq onOpenFaqs={() => setShowFaqs(!showFaqs)} />}
-        {showAboutUs && (
+        {showAboutUs &&
           <AboutUs onOpenAboutUs={() => setShowAboutUs(!showAboutUs)} />
-        )}
+        }
         {showUserProfile && (
           <UserUpdate
             onOpenUserProfile={() => setShowUserProfile(!showUserProfile)}
             handleCloseProfile={handleCloseProfile}
-
           />
         )}
       </div>

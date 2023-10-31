@@ -17,8 +17,7 @@ export const ChatBox = ({
   submitHandler,
   newMessage,
   chatWith,
-  handleThumbsUp,
-  handleThumbsDown,
+  handleLike,
   user,
   messagesEndRef,
   subscribed,
@@ -28,19 +27,10 @@ export const ChatBox = ({
 }) => {
   const navigate = useNavigate();
 
-  // const handleThumbsUp = (id) => {
-  //   setThumbsUp(!thumbsUp);
-  //   setThumbsDown(false);
-  //   console.log("UP id",id)
-
-  // };
-
   const handleKeyDown = (e) => {
-    // e.preventDefault();
     if (e.key === "Enter") {
       onEnterSubmit();
       handleCloseFront();
-
     }
   };
 
@@ -122,8 +112,7 @@ export const ChatBox = ({
                             )} */}
                           </div>
 
-                          {items.attachment &&
-                            items?.message_by !== user && (
+                          { items?.message_by !== user && (
                               <div className="mr-2 flex items-center space-x-1">
                                 {/* <RiThumbUpLine />
                               <RiThumbDownLine /> */}
@@ -131,7 +120,7 @@ export const ChatBox = ({
                                   className={`hover:scale-110 ${
                                     items.status == 1 ? "text-green-600" : ""
                                   }`}
-                                  onClick={() => handleThumbsUp(items.id)}
+                                  onClick={() => handleLike(items.id, true)}
                                 >
                                   <RiThumbUpLine />
                                 </span>
@@ -139,14 +128,14 @@ export const ChatBox = ({
                                   className={`hover:scale-110 ${
                                     items.status == 0 ? "text-red-500" : ""
                                   }`}
-                                  onClick={() => handleThumbsDown(items.id)}
+                                  onClick={() => handleLike(items.id, false)}
                                 >
                                   <RiThumbDownLine />
                                 </span>
                               </div>
                             )}
                         </div>
-                        {items.sources && (
+                        {Array.isArray(items.sources) &&  items.sources.length > 0 && (
                           <div className="mr-2 flex ml-12 text-gray-500 space-x-1 font-medium">
                             <div className="flex space-x-1 ">
                               <FaRegFolderOpen className="text-xl" />{" "}
