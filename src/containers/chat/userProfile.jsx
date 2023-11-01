@@ -10,19 +10,9 @@ import * as Yup from "yup";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { ApiServer } from "../../ApiConstant";
-// import { Client } from "appwrite";
 import { account } from "../../appwriteConfig";
 export const UserUpdate = ({ onOpenUserProfile, handleCloseProfile }) => {
 
-
-
-//   const sdk = require('node-appwrite');
-
-// // Init SDK
-// const client = new sdk.Client();
-
-// const users = new sdk.Users(client);
-  // const [responseData, setResponseData] = useState(null);
   const [responseData, setResponseData] = useState({
     occupation: "",
     specialty: "",
@@ -32,15 +22,10 @@ export const UserUpdate = ({ onOpenUserProfile, handleCloseProfile }) => {
     password: "",
     password2: "",
   });
-  // setShowUserProfile(!showUserProfile)
-
-
-  
-
 
   useEffect(() => {
     const fetchData = async () => {
-      
+
       const promise = account.get();
 
       promise.then(function (response) {
@@ -49,7 +34,7 @@ export const UserUpdate = ({ onOpenUserProfile, handleCloseProfile }) => {
           occupation:response.prefs['profession'],
           specialty:response.prefs['specialty'],
 
-         
+
         });
       }, function (error) {
         console.log(error); // Failure
@@ -93,21 +78,21 @@ export const UserUpdate = ({ onOpenUserProfile, handleCloseProfile }) => {
   };
 
   const updateProfileData = async (formData) => {
-   
-    
+
+
     let  password = formData['password']
-   
-    
+
+
 
     try {
       const response = await axios.put(ApiServer + "/api/admin/update-profile/", formData, {
-  
+
       });
 
       const responseDat = response.data;
       if (responseDat) {
 
-       
+
         alert("Profile is Updated");
         //handleCloseProfile()
 
@@ -227,7 +212,6 @@ export const UserUpdate = ({ onOpenUserProfile, handleCloseProfile }) => {
             name="email"
             onChange={formik?.handleChange}
             onBlur={formik?.handleBlur}
-            //value={formik?.values?.email}
             value={responseData?.email || ""}
             errors={formik?.errors?.email}
             touched={formik?.touched?.email}
@@ -241,7 +225,6 @@ export const UserUpdate = ({ onOpenUserProfile, handleCloseProfile }) => {
             name="current_password"
             onChange={formik?.handleChange}
             onBlur={formik?.handleBlur}
-            //value={responseData?.current_password || ""}
             value={formik?.values?.current_password}
             errors={formik?.errors?.current_password}
             touched={formik?.touched?.current_password}
@@ -255,7 +238,6 @@ export const UserUpdate = ({ onOpenUserProfile, handleCloseProfile }) => {
             name="password"
             onChange={formik?.handleChange}
             onBlur={formik?.handleBlur}
-            //value={responseData?.password || ""}
             value={formik?.values?.password}
             errors={formik?.errors?.password}
             touched={formik?.touched?.password}

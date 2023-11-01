@@ -4,123 +4,64 @@ import {
   InputWithEmoji,
   InputWithCheckbox,
 } from "../../../Components/InputTag/InputWithLabel";
-import { HiArrowNarrowLeft, HiArrowNarrowRight } from "react-icons/hi";
-import { NavLink, useNavigate } from "react-router-dom";
+import { HiArrowNarrowLeft } from "react-icons/hi";
+import { useNavigate } from "react-router-dom";
 import { ASSETS } from "../../../assets/path";
 import Navbar from "../../../Components/navbar/Navbar";
-import { useAuth } from '../../../utils/AuthContext'
-import { Account, ID} from 'appwrite';
-import { account } from "../../../appwriteConfig";
+import axios from "axios";
 
-import React, { useState, useEffect } from "react";
-//import { useSelector, useDispatch } from "react-redux";
+
+import React, { useEffect } from "react";
 
 export const SignUp = ({ formData, onNextStep ,onPreviousStep}) => {
   const navigate = useNavigate();
-  const [password, setPassword] = useState("");
-//  const {registerUser,register} = useAuth()
   const Previous = e => {
     e.preventDefault();
-    console.log("previous click")
     onPreviousStep()
   }
 
-
   const registerUser = async (userInfo) => {
-   // setLoading(true)
-
-    try{
-        
-      
-        let response = await account.create(ID.unique(),userInfo.email, userInfo.password1,userInfo.name, {
-            preferences: {
-              theme: 'dark',
-              language: 'en',
-              notifications: true,
-              profession:userInfo.profession,
-              specialty:userInfo.speciality
-
-              
-            },
-          })
-          if (response){
-            navigate("/finalscr");
-          }
-     
-    }catch(error){
-        console.error(error)
-        alert("Your Account not created due to Server Issue ")
+    try {
+      const response = await axios.post('http://127.0.0.1:8000/api/users',
+        userInfo,
+      );
+      if (response.status == 201) {
+        navigate("/finalscr");
+      }
     }
+      catch (error) {
+        console.error(error.response.data.errors.user);
+    }
+  }
 
-    //setLoading(false)
- }
-
-  
-  
   const handleNext = () => {
-   
-       
-      const form = document.getElementById("RegisterForm");
-      const formDataa = new FormData(form);
-     
-    
-      // Access form data
-      const cgu = formDataa.get("cgu");
-      const pdp = formDataa.get("pdp");
+    const form = document.getElementById("RegisterForm");
+    const newFormData = new FormData(form);
+    let is_cgu = newFormData.get("cgu");
+    let is_pdp = newFormData.get("pdp");
+    const profession = newFormData.get("profession");
+    const speciality = newFormData.get("speciality");
 
-      const profession = formDataa.get("profession");
-      const professionn = formDataa.get("professionn");
-      const speciality = formDataa.get("speciality");
-      let  cguu = formDataa.get("cgu");
-      let  pdpp = formDataa.get("pdp");
+    if (is_cgu === null || is_pdp === null) {
+      alert("Please select Checkbox");
+      console.log("checkalert");
+    } else {
+      const normalizeCheckbox = (value) => (value === 'on' ? 'True' : 'False');
 
+      is_cgu = normalizeCheckbox(is_cgu);
+      is_pdp = normalizeCheckbox(is_pdp);
 
+      const name = formData.full_name;
+      const password = formData.password;
+      const email = formData.email;
 
-      if (cguu === null || pdpp === null) {
-        alert("Please select Checkbox");
-        console.log("checkalert");
-      }
-      else{
+      const userInfo = { name, email, password, profession, speciality, is_cgu, is_pdp };
 
-
-        if (cguu=='on'){
-          cguu="True"
-        }
-        else{
-          cguu="False"
-        } 
-        if (pdpp=='on'){
-          pdpp="True"
-        }
-        else{
-          pdpp="False"
-        } 
-        formData.occupation=profession
-        formData.specialty=speciality
-      
-        formData.cgu=cguu
-        formData.pdp=pdpp
-        let name =formData.full_name
-        let password1= formData.password
-        let password2 = formData.password2
-        let email =formData.email
-        const userInfo = {name, email, password1, password2,profession ,speciality}
-  
-        registerUser(userInfo)
-      
-
-
-      }
-     
-    
-   
-       
-      
-    
-    
+      registerUser(userInfo);
+    }
   };
-  
-  
+
+
 
   return (
     <div className="h-screen overflow-hidden">
@@ -148,8 +89,8 @@ export const SignUp = ({ formData, onNextStep ,onPreviousStep}) => {
               type="text"
 
             />
-        
-           
+
+
             <InputWithEmoji
               image={ASSETS.EMOJI.SHOCK}
               placeholder="Spécialité"
@@ -180,25 +121,18 @@ export const SignUp = ({ formData, onNextStep ,onPreviousStep}) => {
                   className="mt-1 m-2"
                   size={25}
                 />
-              
+
               </span>
-              {/* <button onClick={handleNext}>Next</button> */}
-              {/* <NavLink
-                to=""
-                className={({ isActive, isPending }) =>
-                  isPending ? "pending" : isActive ? "bg-aqua rounded-xl" : ""
-                }
-              > */}
                 <NavBtn
                   text="C’est terminé !"
                   bgcolor="#A1FEDA"
-                  
+
                   onFunctionCalled={handleNext}
                   // icon={
                   //   <HiArrowNarrowRight onClick={() => ""} size={25} />
                   // }
                 />
-             
+
             </div>
           </div>
         </div>

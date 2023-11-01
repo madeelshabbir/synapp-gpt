@@ -77,7 +77,7 @@ export const InputWithIcon = ({
             />
           </span>
         ) : (
-          
+
           pass &&
           !inputtype && (
             <span>
@@ -109,7 +109,6 @@ export const InputWithCheckbox = ({
   required,
   checked,
 }) => {
-  console.log(validate);
   return (
     <>
       {!SignUpDefault && (
@@ -169,7 +168,7 @@ export const InputWithEmoji = ({ image, placeholder, bgcolor, width,type, name,v
         placeholder={placeholder}
         style={{ width: `${width === "w-full" ? "80%" : "390px"}` }}
         className={`bg-inputBg rounded-xl p-2 text-sm outline-none`}
-       
+
       />
     </div>
   );

@@ -1,11 +1,6 @@
-//AXIOS
 import axios from "axios";
-//COMMON API
 import { ApiServer } from "../../ApiConstant";
 
-//JWT-DECODER
-import jwt from "jwt-decode";
-//LOGIN CONSTANTS
 import {
   USER_LOGIN_REQUEST,
   USER_LOGIN_SUCCESS,
@@ -13,7 +8,6 @@ import {
   USER_LOGOUT,
 } from "../constants/LoginConstants";
 
-//LOGIN ACTIONS
 export const login = (username, password) => async (dispatch) => {
   try {
     dispatch({
@@ -36,11 +30,8 @@ export const login = (username, password) => async (dispatch) => {
       type: USER_LOGIN_FAILURE,
       payload: error
     });
-
   }
 };
-
-// Logout Actions
 
 export const Logout = () => (dispatch) => {
   window.localStorage.clear();

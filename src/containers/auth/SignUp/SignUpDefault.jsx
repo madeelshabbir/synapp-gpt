@@ -6,42 +6,27 @@ import {
 } from "../../../Components/InputTag/InputWithLabel";
 import Navbar from "../../../Components/navbar/Navbar";
 import { ASSETS } from "../../../assets/path";
-import { NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useState } from "react";
 import React, { useRef } from "react";
-//import SignUp from './SignUp';
 
 export const SignUpDefault = ({ formData, onNextStep }) => {
-  const navigate = useNavigate();
-  const [enableFormButton, setEnableFormButton] = useState(false);
   const inputRef = useRef("");
-  
-  
 
   const handleNext = () => {
-    // Perform any validation or data manipulation for Step 1
-
-    // Call the onNextStep function to proceed to the next step
-    
-   
     const form = document.getElementById("myform");
-    const formDataa = new FormData(form);
-  
-    // Access form data
-    const email = formDataa.get("email");
-    const password = formDataa.get("password");
+    const formData = new FormData(form);
+    const email = formData.get("email");
+    const password = formData.get("password");
     formData.email=email
     formData.password=password
-    formData.password2=password
     const fullName = email.split("@")[0];
     formData.full_name=fullName;
-   
-   
-
     onNextStep(formData);
   };
+
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -68,29 +53,17 @@ export const SignUpDefault = ({ formData, onNextStep }) => {
         .oneOf([Yup.ref("password"), null], "Password must match"),
     }),
     onSubmit: async (values) => {
-     
       const email = values.email;
       const password = values.password;
       handleNext()
-     
-    //onNextStep(formData);
-     
-     
-      // return <SignUp email={email} password={password}/>;
-      //setEnableFormButton(!enableFormButton);
-      // const payload = {
-      //   email: values.email,
-      //   password: values.password,
-      // };
     },
   });
 
-  console.log(enableFormButton);
   const validateUpperCaseLetter = () => {
     if (formik.values.password && !/[A-Z]/.test(formik.values.password)) {
       return true;
     }
-    return false; // Return undefined if validation passes
+    return false;
   };
 
   const validateSpecialCharacter = () => {
@@ -100,18 +73,16 @@ export const SignUpDefault = ({ formData, onNextStep }) => {
     ) {
       return true;
     }
-    return false; // Return undefined if validation passes
+    return false;
   };
 
   const validateDigits = () => {
     if (formik.values.password && !/[0-9]/.test(formik.values.password)) {
       return true;
     }
-    return false; // Return undefined if validation passes
+    return false;
   };
 
-  // Custom validation function to check form validity
-  // Custom validation function to check form validity
   const isFormValid = () => {
     const { errors, touched, dirty, isValid } = formik;
     const isAnyFieldError = Object.keys(errors).some(
@@ -222,45 +193,11 @@ export const SignUpDefault = ({ formData, onNextStep }) => {
 
           {/* button  */}
           <div className="flex justify-center">
-            {/* <NavLink
-              to="/signup"
-              className={({ isActive, isPending }) =>
-                isPending ? "pending" : isActive ? "bg-aqua rounded-xl" : ""
-              }
-            >
-
-            </NavLink> */}
-             {/* <NavBtn  text="Continue" onClick={handleNext}
-             
-             bgcolor={
-              formik.values.password.length < 1 ||
-              formik.values.confirm_password.length < 1 ||
-              formik.values.email.length < 1 ||
-              !isFormValid()
-                ? "#F0F2F3" // Set the default color when conditions are true
-                : "#A1FEDA" // Set the desired color when conditions are false
-            }
-            color={
-              formik.values.password.length < 1 ||
-              formik.values.confirm_password.length < 1 ||
-              formik.values.email.length < 1 ||
-              !isFormValid()
-                ? "#CDD6D7" // Set the default color when conditions are true
-                : "#053036" // Set the desired color when conditions are false
-            }
-            disabled={
-              formik.values.password.length < 1 ||
-              formik.values.confirm_password.length < 1 ||
-              formik.values.email.length < 1
-                ? true
-                : !isFormValid()
-            }
-             /> */}
             <NavBtn
               text="Continuer"
               // type="submit"
               onFunctionCalled={formik.handleSubmit}
-          
+
 
               bgcolor={
                 formik.values.password.length < 1 ||
