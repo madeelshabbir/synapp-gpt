@@ -10,7 +10,7 @@ export const SideBtn = () => {
   //const dispatch =new useDispatch()
   const handleClick = () => {
     // Perform actions on button click
-   
+
     console.log("Button clicked");
    // dispatch(ListUserAction());
   };
@@ -23,18 +23,17 @@ export const SideBtn = () => {
             isPending ? "pending" : isActive ? "bg-aqua rounded-xl" : ""
           }
         >
-          <NavBtn text="Sources & Model" width="180px" />
+          <NavBtn text="Admin Settings" width="180px" />
         </NavLink>
         <NavLink
           to="/usertable"
           className={({ isActive, isPending }) =>
             isPending ? "pending" : isActive ? "bg-aqua rounded-xl" : ""
           }
-         
         >
           <NavBtn text="Users" width="180px" />
         </NavLink>
-     
+
         <NavLink
           to="/statistics"
           className={({ isActive, isPending }) =>
@@ -42,6 +41,15 @@ export const SideBtn = () => {
           }
         >
           <NavBtn text="Statistics" width="180px" />
+        </NavLink>
+
+        <NavLink
+          to="/files"
+          className={({ isActive, isPending }) =>
+            isPending ? "pending" : isActive ? "bg-aqua rounded-xl" : ""
+          }
+        >
+          <NavBtn text="Model Files" width="180px" />
         </NavLink>
       </div>
     </div>

@@ -93,7 +93,7 @@ const Statistics = () => {
     const promise = databases.listDocuments('64b5432b9e32fda9235a', '64b641e090dc4b18246a');
     promise.then(function (response) {
       setChatdata(response['documents'])
-    
+
 
       const newDataList = chatdata.map((item, index) => ({
         id: index + 1,
@@ -102,7 +102,7 @@ const Statistics = () => {
         status: item.status,
       }));
       setchatdownload(newDataList)
-     
+
 
     }, function (error) {
 
@@ -127,10 +127,10 @@ const Statistics = () => {
       }
     });
 
-    
+
     const count_unique_ips = uniqueIps.size;
     setAnonymous(uniqueIps.size)
-   
+
 
   },[chatdata])
 
@@ -219,7 +219,6 @@ const Statistics = () => {
         {/* side bar  */}
         <div className="w-64 flex flex-col justify-center space-y-[320px] p-2">
           <div className="top-0 flex flex-col justify-center items-center">
-            <Button text="Nouvelle question" />
             <div>
               <SideBtn />
             </div>
@@ -333,7 +332,7 @@ const Statistics = () => {
             </table>
           </div>
 
-         
+
         </div>
         {!subscribed && showModal ? (
           <SubUnsubUsers

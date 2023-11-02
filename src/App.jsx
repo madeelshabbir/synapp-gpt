@@ -4,6 +4,7 @@ import { ChatComponent } from "./containers/chat";
 import UserTable from "./containers/admin/UserTable";
 import Statistics from "./containers/admin/Statistics";
 import SourcesModels from "./containers/admin/SourcesModels";
+import Files from "./containers/admin/Files";
 import { SignUpFinalScr } from "./containers/auth/SignUp/SignupFinalScr";
 import { LoginEmail } from "./containers/auth/SignUp/LoginEmail";
 import { NewPass } from "./containers/auth/SignUp/NewPass";
@@ -33,6 +34,7 @@ function App() {
           <Route path="/chat" element={<ChatComponent/>}/>
           <Route path='/sourcesmodels' element={<SourcesModels></SourcesModels>} />
           <Route path='/statistics' element={<Statistics></Statistics>} />
+          <Route path='/files' element={<Files></Files>} />
           <Route path='/usertable' element={<UserTable></UserTable>} />
           </Route>
         </Routes>

@@ -22,7 +22,7 @@ const UserTable = () => {
   //   dispatch(ListUserAction());
   // }, [dispatch]);
   const [alluser, setAlluser] = useState([]);
- 
+
   const [showFaqs, setShowFaqs] = useState(false);
   const [showUserProfile, setShowUserProfile] = useState(false);
   const [showAboutUs, setShowAboutUs] = useState(false);
@@ -62,7 +62,7 @@ const UserTable = () => {
 
     const access_token = localStorage.getItem('access_token');
     axios.get(ApiServer + '/api/admin/user-export-csv/', { responseType: 'blob' },
-     
+
     )
       .then(response => {
 
@@ -102,7 +102,7 @@ const UserTable = () => {
 
 
         if (response) {
-        
+
           setAlluser(response.data)
 
 
@@ -135,7 +135,6 @@ const UserTable = () => {
         {/* side bar  */}
         <div className="w-64 flex flex-col justify-between space-y-44 p-2">
           <div className=" flex flex-col justify-center items-center">
-            <Button text="Nouvelle question" />
             <div>
               <SideBtn />
             </div>
@@ -195,10 +194,10 @@ const UserTable = () => {
                 </tr>
               ))}
 
-               
-          </tbody> 
+
+          </tbody>
           </table>
-         
+
         </div>
         {!subscribed && showModal ? (
           <SubUnsubUsers
@@ -234,80 +233,5 @@ const UserTable = () => {
     </div>
   );
 };
-
-
-
-//   return (
-//     <div className="h-screen">
-//       <Navbar />
-//       {/* main div  */}
-//       <div className="flex bg-bgCremo">
-//         {/* side bar  */}
-//         <div className="w-64 flex flex-col justify-between space-y-44 p-2">
-//           <div className=" flex flex-col justify-center items-center">
-//             <Button text="Nouvelle question" />
-//             <div>
-//               <SideBtn />
-//             </div>
-//           </div>
-//           <AttentionNote />
-//         </div>
-
-//         {/* table div  */}
-//         <div className="w-full p-10">
-//           <div className="flex justify-end">
-//             <NavBtn text="Export users in CSV" bgcolor="#A1FEDA" onFunctionCalled={exportUsersToCSV} />
-//           </div>
-//           <table className="p-2 mt-6 w-full rounded-lg">
-//             <thead className="text-normal uppercase bg-[#F0F2F3] shadow-lg">
-//               <tr className="font-semibold tracking-wide text-left">
-//                 <th className={`${tlClass}`}>#No</th>
-//                 <th className={`${tlClass}`}>Full Name</th>
-//                 <th className={`${tlClass}`}>Email</th>
-//                 <th className={`${tlClass}`}>Profession </th>
-//                 <th className={`${tlClass}`}>Speciality</th>
-//               </tr>
-//             </thead>
-//             <tbody className="">
-//               {alluser && alluser.map((user, index) => (
-//                 <tr
-//                   key={index}
-//                   className={`hover:bg-teal-50 cursor-pointer text-sm text-left shadow-lg`}
-//                 >
-//                   <td className={`${tdClass}`}>{index + 1}</td>
-//                   <td className={`${tdClass}`}>{user.name}</td>
-//                   <td className={`${tdClass}`}>{user.email}</td>
-//                   {user.prefs ? (
-//                     <>
-//                       <td className={`${tdClass}`}>{user.prefs.profession}</td>
-//                       <td className={`${tdClass}`}>{user.prefs.speciality}</td>
-//                     </>
-//                   ) : (
-//                     <>
-//                       <td className={`${tdClass}`}></td>
-//                       <td className={`${tdClass}`}></td>
-//                     </>
-//                   )}
-
-//                 </tr>
-//               ))}
-
-//               {/* <tr
-//                 className={` hover:bg-teal-50 cursor-pointer text-sm text-left shadow-lg`}
-//               >
-//                 <td className={`${tdClass}  `}>test</td>
-//                 <td className={` ${tdClass}`}>test@test.com</td>
-//                 <td className={`  ${tdClass}`}>testing </td>
-//                 <td className={` ${tdClass}`}>tester</td>
-//               </tr> */}
-//             </tbody>
-//           </table>
-//         </div>
-//       </div>
-//       <div></div>
-    
-//     </div>
-//   );
-// };
 
 export default UserTable;
