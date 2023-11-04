@@ -10,8 +10,6 @@ import { ASSETS } from "../../../assets/path";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-//import { useDispatch ,useSelector} from "react-redux";
-//import {forgetpassword} from '../../../redux/actions/RegisterAction'
 import { useEffect } from "react";
 
 import { Client, Account } from "appwrite";
@@ -25,31 +23,9 @@ export const NewPass = () => {
   const account = new Account(client);
 
   client
-    .setEndpoint('https://cloud.appwrite.io/v1')
-    .setProject('64b4cb0d1b60dd5e3a99');
+    .setEndpoint(import.meta.env.VITE_REACT_APP_APPWRITE_API_URL)
+    .setProject(import.meta.env.VITE_REACT_APP_APPWRITE_PROJECT_ID);
 
-
-  //const dispatch_ = useDispatch();
-  // const {error} = useSelector(state => state.forgetPassword);
-  // const navigate = useNavigate();
-
-
-  //const {forgetdata} = useSelector((state) => state.forgetPassword);
-
-
-
-  //USE-EFFECT
-  // useEffect(() => {
-  //   if (forgetdata) {
-  //     navigate("/login");
-  //     console.log("forgetdata")
-  //   }
-
-  //    else {
-
-  //     console.log("not forget")
-  //   }
-  // }, [forgetdata]);
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
@@ -68,25 +44,16 @@ export const NewPass = () => {
       console.log(values);
       console.log("passsword hai doskr")
       const email = values.email
-      // const form = document.getElementById("forgetpass");
-      // const formData = new FormData(form);
       console.log("email", email)
-      //navigate('/confirm-password')
-
-      const promise = account.createRecovery(email, 'http://127.0.0.1:5173/confirm-password');
+      const promise = account.createRecovery(email, `${import.meta.env.VITE_REACT_APP_APPWRITE_API_URL}/confirm-password`);
 
       promise.then(function (response) {
         console.log("sucesss", response);
         alert("Check Your Email")
-
-        //navigate('/confirm-password')
-        // Success
       }, function (error) {
         console.log("error hai", error); // Failure
         alert("Your Email Does Not Exist or Invalid")
       });
-      // dispatch_(forgetpassword(email,password,password2));
-
     },
   });
 
@@ -132,7 +99,6 @@ export const NewPass = () => {
       <Navbar signup={true} />
       <div className="flex">
         <div className="flex flex-col  space-y-8 w-1/2 py-10">
-          {/* heading and discription  */}
           <div className="flex flex-col items-center">
             <h1 className="text-3xl text-center font-bold w-1/2">
               Réinitialiser votre mot de passe
@@ -140,14 +106,8 @@ export const NewPass = () => {
             <p className="text-textgray text-center text-lg py-5">
               Il vous sera demander pour vous connecter.
             </p>
-            {/* <p className="text-textgray text-center text-lg py-5">
-
-            </p> */}
-            {/* {error && <p className="text-textgray text-center text-lg py-5 style={{ color: 'red' }}">{error.non_field_errors}</p>} */}
-
           </div>
 
-          {/* form  */}
           <div className="px-5 space-y-4 mx-auto flex flex-col items-start">
             <form
               onSubmit={formik.handleSubmit}
@@ -166,45 +126,10 @@ export const NewPass = () => {
               />
 
             </form>
-
-            {/* checkbox  */}
-            {/* <div className="flex flex-col text-sm">
-              <InputWithCheckbox
-                SignUpDefault={true}
-                label="Au moins 8 caractères"
-                validate={formik.values.password.length < 8}
-                touched={formik.values.password.length > 1}
-              />
-
-              <InputWithCheckbox
-                SignUpDefault={true}
-                label="1 lettre en majuscule"
-                validate={validateUpperCaseLetter()}
-                touched={formik?.values?.password.length > 1}
-              />
-              <InputWithCheckbox
-                SignUpDefault={true}
-                label="1 chiffre"
-                validate={validateDigits()}
-                touched={formik.values.password.length > 1}
-              />
-              <InputWithCheckbox
-                SignUpDefault={true}
-                label="1 caractère spécial"
-                validate={validateSpecialCharacter()}
-                touched={formik.values.password.length > 1}
-              />
-            </div> */}
           </div>
 
           {/* button  */}
           <div className="flex justify-center">
-            {/* <NavLink
-               to="/login"
-              className={({ isActive, isPending }) =>
-                isPending ? "pending" : isActive ? "bg-aqua rounded-xl" : ""
-              }
-            > */}
             <NavBtn
               text="Valider"
               bgcolor="#F0F2F3"

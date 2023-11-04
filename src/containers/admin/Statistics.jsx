@@ -9,7 +9,6 @@ import { BarChart } from "../../Components/Charts/bar";
 import { PieChart } from "../../Components/Charts/pie";
 import { ExampleTool } from "../../Components/Charts/tooltip"
 import { FiThumbsDown, FiThumbsUp } from "react-icons/fi";
-import { ApiServer } from "../../ApiConstant";
 import { SubUnsubUsers } from "../chat/SubUnsubUsers";
 import { Faq } from "../chat/faq";
 import { AboutUs } from "../chat/aboutUs";
@@ -27,9 +26,10 @@ const Statistics = () => {
   const [showAboutUs, setShowAboutUs] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const subscribed = localStorage.getItem('username');
+  const apiServer = import.meta.env.VITE_REACT_APP_API_URL;
 
   const exportDataToCSV = async () => {
-    axios.get(ApiServer + '/api/admin/users/csv?model=question', { responseType: 'blob' },
+    axios.get(`${apiServer}/api/admin/users/csv?model=question`, { responseType: 'blob' },
     ).then(response => {
       const blob = new Blob([response.data], { type: 'text/csv' });
       saveAs(blob, 'data.csv');
@@ -41,7 +41,7 @@ const Statistics = () => {
 
   useEffect(() => {
     const fetchAllQuestions = async () => {
-      const resp = await axios.get(`${ApiServer}/api/admin/questions`);
+      const resp = await axios.get(`${apiServer}/api/admin/questions`);
       setChatdata(resp.data.questions['documents'])
 
       const newDataList = chatdata.map((item, index) => ({
@@ -61,7 +61,7 @@ const Statistics = () => {
     const fetchDocumentData = async () => {
       const access_token = localStorage.getItem('access_token');
       try {
-        const response = await axios.get(ApiServer + '/api/admin/document/');
+        const response = await axios.get(`${apiServer}/api/admin/document/`);
 
         if (response) {
           settrainDocument(response.data['train_docx'])

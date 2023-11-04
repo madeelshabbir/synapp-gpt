@@ -9,7 +9,6 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { ApiServer } from "../../ApiConstant";
 import { account } from "../../appwriteConfig";
 export const UserUpdate = ({ onOpenUserProfile, handleCloseProfile }) => {
 
@@ -22,6 +21,8 @@ export const UserUpdate = ({ onOpenUserProfile, handleCloseProfile }) => {
     password: "",
     password2: "",
   });
+
+  const apiServer = import.meta.env.VITE_REACT_APP_API_URL;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -49,7 +50,7 @@ export const UserUpdate = ({ onOpenUserProfile, handleCloseProfile }) => {
   const updateProfileData = async (formData) => {
     let  password = formData['password']
     try {
-      const response = await axios.put(ApiServer + "/api/admin/update-profile/", formData, {});
+      const response = await axios.put(`${apiServer}/api/admin/update-profile/`, formData, {});
       const responseDat = response.data;
       if (responseDat) {
         alert("Profile is Updated");

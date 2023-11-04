@@ -10,7 +10,6 @@ import { SubUnsubUsers } from "./SubUnsubUsers";
 import { SubscriptionModal } from "../../Components/modal/SubscriptionModal";
 import { FaCheck, FaEdit, FaTimes } from "react-icons/fa";
 import { ImBin } from "react-icons/im";
-import { ApiServer } from "../../ApiConstant";
 import axios from "axios";
 import { ChatTooltip } from "../../Components/Charts/tooltip";
 export const ChatComponent = () => {
@@ -40,12 +39,13 @@ export const ChatComponent = () => {
 
   const [count, setcount] = useState(0);
   const [prompt, setPrompt] = useState(null);
+  const apiServer = import.meta.env.VITE_REACT_APP_API_URL;
 
   const access_token = localStorage.getItem("access_token");
 
   const SubmitQuestion = async (formData) => {
     try {
-      const response = await axios.post(ApiServer + '/api/admin/questions/',
+      const response = await axios.post(`${apiServer}/api/admin/questions/`,
         formData,
       );
       const answer = response.data;
@@ -71,7 +71,7 @@ export const ChatComponent = () => {
 
   const fetchChatData = async () => {
     let data;
-    const resp = await axios.get(`${ApiServer}/api/admin/question?query=${user}`);
+    const resp = await axios.get(`${apiServer}/api/admin/question?query=${user}`);
     setcount(resp.data.questions.total);
     data = resp.data.questions.documents;
     let prompt_array = [];
@@ -124,11 +124,12 @@ export const ChatComponent = () => {
   };
 
   const fetchCountOfUsers = async () => {
-    const resp = await axios.get(`${ApiServer}/api/admin/subcriber`)
+    const resp = await axios.get(`${apiServer}/api/admin/permissions/`);
+    const permissionData = resp.data.permissions;
     if (!subscribed) {
-      setNumberofUnsubcriber(resp.data.unsubcriber);
+      setNumberofUnsubcriber(permissionData.unsubscriber);
     } else {
-      setNumberofSubcriber(resp.data.subcriber);
+      setNumberofSubcriber(permissionData.subscriber);
     }
   };
 
@@ -302,7 +303,7 @@ export const ChatComponent = () => {
     var bodyFormData = new FormData();
     bodyFormData.append('id', id);
     bodyFormData.append('status', status)
-    const response = await axios.put(ApiServer + '/api/admin/questions/',
+    const response = await axios.put(`${apiServer}/api/admin/questions/`,
       bodyFormData,
     );
     if (response.status == 200) {

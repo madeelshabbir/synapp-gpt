@@ -9,7 +9,6 @@ import React, { useRef } from 'react';
 import { SubUnsubUsers } from "../chat/SubUnsubUsers";
 import { Faq } from "../chat/faq";
 import { AboutUs } from "../chat/aboutUs";
-import { ApiServer } from "../../ApiConstant";
 
 const SourcesModels = () => {
   const [temperatureValue, setTemperatureValue] = useState(0.7);
@@ -28,6 +27,7 @@ const SourcesModels = () => {
   const [showFaqs, setShowFaqs] = useState(false);
   const [showUserProfile, setShowUserProfile] = useState(false);
   const [showAboutUs, setShowAboutUs] = useState(false);
+  const apiServer = import.meta.env.VITE_REACT_APP_API_URL;
 
   useEffect(() => {
     if (showAboutUs || showFaqs || showUserProfile) {
@@ -55,7 +55,7 @@ const SourcesModels = () => {
     const fetchparameterData = async () => {
       const access_token = localStorage.getItem('access_token');
       try {
-        const response = await axios.get(ApiServer + '/api/admin/parameter/');
+        const response = await axios.get(`${apiServer}/api/admin/parameter/`);
         const parameterdata = response.data.parameter;
         if (parameterdata) {
           setTemperatureValue(parameterdata.temperature);
@@ -77,7 +77,7 @@ const SourcesModels = () => {
   useEffect(() => {
     const fetchPermissionData = async() => {
       try {
-        const response = await axios.get(ApiServer + '/api/admin/permissions/');
+        const response = await axios.get(`${apiServer}/api/admin/permissions/`);
         const permissionData = response.data.permissions;
         if (permissionData) {
           setNumberofSubcriber(permissionData.subscriber);
@@ -98,7 +98,7 @@ const SourcesModels = () => {
     requestBody.append('subscriber', formData.get('subcriber'));
     requestBody.append('unsubscriber', formData.get('unsubcriber'));
     try {
-      const response = await axios.put(ApiServer + '/api/admin/permissions/', requestBody);
+      const response = await axios.put(`${apiServer}/api/admin/permissions/`, requestBody);
       const permissionData = response.data.permissions;
       if (permissionData) {
         setNumberofSubcriber(permissionData.subscriber);
@@ -126,7 +126,7 @@ const SourcesModels = () => {
     setShowDiv(true);
     try {
       const response = await axios.put(
-        ApiServer + '/api/admin/parameter/',
+        `${apiServer}/api/admin/parameter/`,
         formData
       );
 

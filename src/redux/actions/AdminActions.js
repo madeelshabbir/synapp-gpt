@@ -1,7 +1,6 @@
 //AXIOS
 import axios from "axios";
 //COMMON API
-import { ApiServer } from "../../ApiConstant";
 //LIST CONSTANTS
 import {
     ADMIN_FILE_SUCCESS,
@@ -38,10 +37,11 @@ export const AddFileAction = (formData) => async (dispatch) => {
  // console.log("function claa",formData)
   try {
     dispatch({ type: ADMIN_FILE_REQUEST });
-   
+
     // var bodyFormData = new FormData();
     // bodyFormData.append("file", formData);
-    const { data } = await axios.post(ApiServer + "/api/admin/upload-file/", formData);
+    const apiServer = import.meta.env.VITE_REACT_APP_API_URL;
+    const { data } = await axios.post(`${apiServer}/api/admin/upload-file/`, formData);
     dispatch({
       type: ADMIN_FILE_SUCCESS,
       payload: data,
@@ -69,9 +69,9 @@ export const ListUserAction = () => async (dispatch) => {
             }`,
           },
         };
-     
-  
-      const { data } = await axios.get(ApiServer + `/api/admin/get-all-user/`,config);
+
+      const apiServer = import.meta.env.VITE_REACT_APP_API_URL;
+      const { data } = await axios.get(`${apiServer}/api/admin/get-all-user/`,config);
       dispatch({
         type: LIST_USER_SUCCESS,
         payload: data,
@@ -97,8 +97,8 @@ export const ListUserAction = () => async (dispatch) => {
    // console.log("call for get all user")
       try {
         dispatch({ type: ADMIN_PARAMETER_REQUEST });
-    
-        const { data } = await axios.get(ApiServer + "/api/admin/parameter/");
+        const apiServer = import.meta.env.VITE_REACT_APP_API_URL;
+        const { data } = await axios.get(`${apiServer}/api/admin/parameter/`);
         dispatch({
           type: ADMIN_PARAMETER_SUCCESS,
           payload: data,
@@ -110,7 +110,7 @@ export const ListUserAction = () => async (dispatch) => {
         });
       }
     };
-  
+
 
 // UPDATE ADMIN ACTIONS for Parameter
 export const UpdateParameterAdminAction = ({ temperture,
@@ -124,10 +124,10 @@ export const UpdateParameterAdminAction = ({ temperture,
       dispatch({
         type: UPDATE_ADMIN_PARAMETER_REQUEST,
       });
-      
-      
-      
-      const { data } = await axios.put(ApiServer + `/api/admin/parameter/`,
+
+
+      const apiServer = import.meta.env.VITE_REACT_APP_API_URL;
+      const { data } = await axios.put(`${apiServer}/api/admin/parameter/`,
         {
           temperture: temperture,
           max_length: max_length,
@@ -136,7 +136,7 @@ export const UpdateParameterAdminAction = ({ temperture,
           top_p: top_p,
           model_name:model_name,
         }
-      
+
       );
       dispatch({
         type: UPDATE_ADMIN_PARAMETER_SUCCESS,
@@ -156,8 +156,9 @@ export const UpdateParameterAdminAction = ({ temperture,
    // console.log("call for get all user")
       try {
         dispatch({ type: ADMIN_SUBCRIBER_REQUEST });
-      
-        const { data } = await axios.get(ApiServer + "/api/admin/unsubcriber/");
+        const apiServer = import.meta.env.VITE_REACT_APP_API_URL;
+
+        const { data } = await axios.get(`${apiServer}/api/admin/unsubcriber/`);
         dispatch({
           type: ADMIN_SUBCRIBER_SUCCESS,
           payload: data,
@@ -169,7 +170,7 @@ export const UpdateParameterAdminAction = ({ temperture,
         });
       }
     };
-  
+
 
 // UPDATE ADMIN ACTIONS for Parameter
 export const UpdateSubcriberAction = ({ subcriber,unsubcriber
@@ -179,15 +180,16 @@ export const UpdateSubcriberAction = ({ subcriber,unsubcriber
       dispatch({
         type: UPDATE_ADMIN_SUBCRIBER_REQUEST,
       });
-      
-  
-      const { data } = await axios.put(ApiServer + `/api/admin/subcriber/`,
+
+      const apiServer = import.meta.env.VITE_REACT_APP_API_URL;
+
+      const { data } = await axios.put(`${apiServer}/api/admin/subcriber/`,
         {
           subcriber: subcriber,
           unsubcriber: unsubcriber,
-        
+
         }
-      
+
       );
       dispatch({
         type: UPDATE_ADMIN_SUBCRIBER_SUCCESS,

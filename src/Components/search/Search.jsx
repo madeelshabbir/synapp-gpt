@@ -1,24 +1,13 @@
 import axios from "axios";
 import React, { useState ,useEffect} from "react";
 import { FiSearch } from "react-icons/fi";
-import { ApiServer } from "../../ApiConstant";
 
-// document.getElementById('datatable-search-input').addEventListener('input', (e) => {
-//   //instance.input-group(e.target.value);
-
-
-//   console.log("value",e.target.value)
-//   console.log("service")
-
-
-// });
 const Search = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [originalResults, setOriginalResults] = useState([]);
   const handleSearch =  (e) => {
     const query = e.target.value.toLowerCase();
-    //console.log("click", e.target.value.toLowerCase(),"data",searchResults)
     const filteredResults = originalResults.filter(
       (file) => file.file_name.toLowerCase().includes(query)
     );
@@ -28,8 +17,6 @@ const Search = () => {
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
-      // Perform additional actions when Enter key is pressed
-      // For example, redirect to a search results page
       console.log("Search for:", searchQuery);
     }
   };
@@ -38,7 +25,7 @@ const Search = () => {
   useEffect(() => {
     const fetchfileData = async () => {
       try {
-        const response = await axios.get(ApiServer + '/api/admin/get-file/', {
+        const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/admin/get-file/`, {
 
         });
 
@@ -47,12 +34,7 @@ const Search = () => {
 
           setSearchResults(filedata);
           setOriginalResults(filedata);
-
-
         }
-
-
-
 
         // ... do something with the response data
       } catch (error) {
@@ -107,7 +89,7 @@ const Search = () => {
         .map((file) => (
           <li key={file.id}  className="search_list">
             <a
-              href={`${ApiServer}/api/admin/view-file/${file.id}`} // Replace with your API endpoint to fetch the PDF file
+              href={`${import.meta.env.VITE_REACT_APP_API_URL}/api/admin/view-file/${file.id}`} // Replace with your API endpoint to fetch the PDF file
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -118,29 +100,6 @@ const Search = () => {
     </ul>
   </div>
 )}
-
-
-
-
-
-
-
-
-
-
-      {/* {searchQuery && (
-  <div className="mt-4" style={positionAbsolute}>
-    <ul>
-      {searchResults
-        .filter((file) =>
-          file.file_name.toLowerCase().startsWith(searchQuery.toLowerCase())
-        )
-        .map((file) => (
-          <li key={file.id}>{file.file_name}</li>
-        ))}
-    </ul>
-  </div>
-)} */}
     </div>
   );
 };

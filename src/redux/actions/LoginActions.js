@@ -1,5 +1,4 @@
 import axios from "axios";
-import { ApiServer } from "../../ApiConstant";
 
 import {
   USER_LOGIN_REQUEST,
@@ -16,7 +15,9 @@ export const login = (username, password) => async (dispatch) => {
     var bodyFormData = new FormData();
     bodyFormData.append("email", username);
     bodyFormData.append("password", password);
-    const { data } = await axios.post(ApiServer + "/api/login/", bodyFormData);
+    const apiServer = import.meta.env.VITE_REACT_APP_API_URL;
+
+    const { data } = await axios.post(`${apiServer}/api/login/`, bodyFormData);
     dispatch({
       type: USER_LOGIN_SUCCESS,
       payload: data,

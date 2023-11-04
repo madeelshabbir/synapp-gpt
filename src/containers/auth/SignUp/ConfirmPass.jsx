@@ -31,15 +31,12 @@ useEffect(() => {
 }, [location.search]);
 
 const extractUserIdAndSecretId = (search) => {
-  // Create a URLSearchParams object from the search part of the URL
   const searchParams = new URLSearchParams(search);
 
-  // Get the values of userid and secretid from the search parameters
   const userId = searchParams.get('userid');
   const secretId = searchParams.get('secretid');
   setuserid(userId);
   setsecretid(secretId);
-  // Do whatever you need to do with userId and secretId
 
 };
 
@@ -47,8 +44,8 @@ const extractUserIdAndSecretId = (search) => {
 const account = new Account(client);
 
 client
-      .setEndpoint('https://cloud.appwrite.io/v1')
-      .setProject('64b4cb0d1b60dd5e3a99');
+      .setEndpoint(import.meta.env.VITE_REACT_APP_APPWRITE_API_URL)
+      .setProject(import.meta.env.VITE_REACT_APP_APPWRITE_PROJECT_ID);
 
   const formik = useFormik({
     enableReinitialize: true,

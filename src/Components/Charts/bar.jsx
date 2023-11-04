@@ -10,7 +10,6 @@ import {
   Legend,
 } from 'chart.js';
 import { Days, Months, Weeks, HalfYear } from './data';
-import { ApiServer } from '../../ApiConstant';
 
 import axios from 'axios';
 
@@ -24,7 +23,7 @@ export const BarChart = ({ duration }) => {
   const access_token = localStorage.getItem('access_token');
   const fetchDataforChart = async () => {
     try {
-      const response = await axios.get(ApiServer + '/api/admin/statistics/');
+      const response = await axios.get(`${import.meta.env.VITE_REACT_APP_API_URL}/api/admin/statistics/`);
       if (response) {
         const responseData = response.data; // Use a different variable name here
         setMonth(responseData.month);

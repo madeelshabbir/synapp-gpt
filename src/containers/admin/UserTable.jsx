@@ -6,7 +6,6 @@ import Navbar from "../../Components/navbar/Navbar";
 import AttentionNote from "../../Components/AttentionNote/AttentionNote";
 import NavBtn from "../../Components/Button/NavBtn";
 import { SideBtn } from "./SideBtn";
-import { ApiServer } from "../../ApiConstant";
 import { SubUnsubUsers } from "../chat/SubUnsubUsers";
 import { Faq } from "../chat/faq";
 import { AboutUs } from "../chat/aboutUs";
@@ -20,9 +19,10 @@ const UserTable = () => {
   const [showAboutUs, setShowAboutUs] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const subscribed = localStorage.getItem('username');
+  const apiServer = import.meta.env.VITE_REACT_APP_API_URL;
 
   const exportUsersToCSV = async () => {
-    axios.get(`${ApiServer}/api/admin/users/csv?model=user`,
+    axios.get(`${apiServer}/api/admin/users/csv?model=user`,
       { responseType: 'blob' },
     ).then(response => {
       const blob = new Blob([response.data], { type: 'text/csv' });
@@ -55,7 +55,7 @@ const UserTable = () => {
   useEffect(() => {
     const fetchAllUserData = async () => {
       try {
-        const response = await axios.get(ApiServer + '/api/admin/users/');
+        const response = await axios.get(`${apiServer}/api/admin/users/`);
         if (response) {
           setAlluser(response.data.users);
         }

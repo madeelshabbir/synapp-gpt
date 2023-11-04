@@ -9,7 +9,6 @@ import { Faq } from "../chat/faq";
 import { AboutUs } from "../chat/aboutUs";
 import { SideBtn } from "./SideBtn";
 import { InputWithIcon } from "../../Components/InputTag/InputWithLabel";
-import { ApiServer } from "../../ApiConstant";
 
 const Files = () => {
   const [files, setFiles] = useState([]);
@@ -20,7 +19,7 @@ const Files = () => {
   const subscribed = localStorage.getItem('username');
   const [showDiv, setShowDiv] = useState(false);
   const fileInputRef = useRef(null);
-
+  const apiServer = import.meta.env.VITE_REACT_APP_API_URL;
   const [selectedFileNames, setSelectedFileNames] = useState([]);
   const tlClass = "p-3 h-full ";
   const tdClass = "  p-2   ";
@@ -45,7 +44,7 @@ const Files = () => {
 
   const fetchData = async () => {
     try {
-      const response = await axios.get(ApiServer+'/api/admin/files/');
+      const response = await axios.get(`${apiServer}/api/admin/files/`);
       const data = response.data.files;
       setFiles(data);
     } catch (error) {
@@ -70,7 +69,7 @@ const Files = () => {
     const access_token = localStorage.getItem('access_token');
     try {
       const response = await axios.post(
-        ApiServer + '/api/admin/files/',
+        `${apiServer}/api/admin/files/`,
         formData,
       );
       const responseData = response.data;

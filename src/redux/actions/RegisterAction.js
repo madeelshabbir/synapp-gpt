@@ -1,7 +1,6 @@
 //AXIOS
 import axios from "axios";
 //COMMON API
-import { ApiServer } from "../../ApiConstant";
 
 //JWT-DECODER
 import jwt from "jwt-decode";
@@ -25,7 +24,8 @@ export const register = (formData) => async (dispatch) => {
     // var bodyFormData = new FormData();
     // bodyFormData.append("email", username);
     // bodyFormData.append("password", password);
-    const { data } = await axios.post(ApiServer + "/api/register/", formData);
+    const apiServer = import.meta.env.VITE_REACT_APP_API_URL;
+    const { data } = await axios.post(`${apiServer}/api/register/`, formData);
    // console.log("manzoor",data)
    // const token = data.token.access;
     //storeToken(res.data.token)
@@ -39,13 +39,13 @@ export const register = (formData) => async (dispatch) => {
     //console.log("success", data);
     // localStorage.setItem("userInfo", JSON.stringify(data));
     // localStorage.setItem("user", JSON.stringify(user.user_id));
-    
+
   } catch (error) {
     dispatch({
       type: USER_REGISTER_FAILURE,
       payload: error,
     });
-  
+
     //console.log(error.response.status);
   }
 };
@@ -59,15 +59,16 @@ export const forgetpassword = (email,password,password2) => async (dispatch) => 
     dispatch({
       type: USER_FORGETPASS_REQUEST,
     });
-    
-    
-    
+
+
+
     var bodyFormData = new FormData();
     bodyFormData.append("email", email);
     bodyFormData.append("password", password);
     bodyFormData.append("password2", password2);
+    const apiServer = import.meta.env.VITE_REACT_APP_API_URL;
 
-    const { data } = await axios.post(ApiServer + "/api/change_password/", bodyFormData);
+    const { data } = await axios.post(`${apiServer}/api/change_password/`, bodyFormData);
    // console.log("manzoor",data)
    // const token = data.token.access;
     //storeToken(res.data.token)
@@ -81,13 +82,13 @@ export const forgetpassword = (email,password,password2) => async (dispatch) => 
     //console.log("success", data);
     // localStorage.setItem("userInfo", JSON.stringify(data));
     // localStorage.setItem("user", JSON.stringify(user.user_id));
-    
+
   } catch (error) {
     dispatch({
       type: USER_FORGETPASS_FAILURE,
       payload: error,
     });
-  
+
     //console.log(error.response.status);
   }
 };
