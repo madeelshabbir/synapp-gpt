@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-import { Client, Databases, Query } from "appwrite";
 
 import { ChatBox } from "./chatbox";
 import Navbar from "../../Components/navbar/Navbar";
@@ -7,7 +6,6 @@ import AttentionNote from "../../Components/AttentionNote/AttentionNote";
 import Button from "../../Components/Button/Button";
 import { Faq } from "./faq";
 import { AboutUs } from "./aboutUs";
-import { UserUpdate } from "./userProfile";
 import { SubUnsubUsers } from "./SubUnsubUsers";
 import { SubscriptionModal } from "../../Components/modal/SubscriptionModal";
 import { FaCheck, FaEdit, FaTimes } from "react-icons/fa";
@@ -47,7 +45,7 @@ export const ChatComponent = () => {
 
   const SubmitQuestion = async (formData) => {
     try {
-      const response = await axios.post(ApiServer + '/api/admin/question/',
+      const response = await axios.post(ApiServer + '/api/admin/questions/',
         formData,
       );
       const answer = response.data;
@@ -67,15 +65,15 @@ export const ChatComponent = () => {
       fetchChatData();
     }
     catch (error) {
-      console.error(error);
+      console.log(error);
     }
   };
 
   const fetchChatData = async () => {
     let data;
-    const resp = await axios.get(`${ApiServer}/api/admin/chat-history?query=${user}`);
-    setcount(resp.data.data.total);
-    data = resp.data.data.documents;
+    const resp = await axios.get(`${ApiServer}/api/admin/question?query=${user}`);
+    setcount(resp.data.questions.total);
+    data = resp.data.questions.documents;
     let prompt_array = [];
     let prompt_id = 0;
     const MAX_WORDS = 5;
@@ -151,7 +149,7 @@ export const ChatComponent = () => {
           setTextt(`${count}/${NumberofUnsubcriber} messages restants`);
           setCheck(NumberofUnsubcriber);
         } catch (error) {
-          console.error("Error fetching IP address:", error);
+          console.log("Error fetching IP address:", error);
         }
       } else {
         fetchChatData();
@@ -304,7 +302,7 @@ export const ChatComponent = () => {
     var bodyFormData = new FormData();
     bodyFormData.append('id', id);
     bodyFormData.append('status', status)
-    const response = await axios.put(ApiServer + '/api/admin/question/',
+    const response = await axios.put(ApiServer + '/api/admin/questions/',
       bodyFormData,
     );
     if (response.status == 200) {
@@ -545,12 +543,6 @@ export const ChatComponent = () => {
         {showAboutUs &&
           <AboutUs onOpenAboutUs={() => setShowAboutUs(!showAboutUs)} />
         }
-        {showUserProfile && (
-          <UserUpdate
-            onOpenUserProfile={() => setShowUserProfile(!showUserProfile)}
-            handleCloseProfile={handleCloseProfile}
-          />
-        )}
       </div>
     </div>
   );

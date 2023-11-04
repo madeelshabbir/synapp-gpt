@@ -25,51 +25,20 @@ export const UserUpdate = ({ onOpenUserProfile, handleCloseProfile }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-
       const promise = account.get();
-
       promise.then(function (response) {
           setResponseData({
           email: response.email,
           occupation:response.prefs['profession'],
           specialty:response.prefs['specialty'],
-
-
         });
       }, function (error) {
-        console.log(error); // Failure
+        console.log(error);
       });
-
-
-
-      // const access_token = localStorage.getItem("access_token");
-
-      // try {
-      //   const response = await axios.get(ApiServer + "/api/profile/", {
-      //     headers: {
-      //       Authorization: `Bearer ${access_token}`,
-      //     },
-      //   });
-
-      //   const responseDat = response.data;
-      //   setResponseData({
-      //     email: responseDat.email,
-      //     occupation: responseDat.occupation,
-      //     specialty: responseDat.specialty,
-      //   });
-      //   console.log("profile data", responseData);
-
-      //   // ... do something with the response data
-      // } catch (error) {
-      //   // Handle error
-      //   console.error(error);
-      //   console.log("profile error");
-      //   // ... handle the error
-      // }
     };
-
     fetchData();
   }, []);
+
   const handleChange = (e) => {
     setResponseData({
       ...responseData,
@@ -78,45 +47,22 @@ export const UserUpdate = ({ onOpenUserProfile, handleCloseProfile }) => {
   };
 
   const updateProfileData = async (formData) => {
-
-
     let  password = formData['password']
-
-
-
     try {
-      const response = await axios.put(ApiServer + "/api/admin/update-profile/", formData, {
-
-      });
-
+      const response = await axios.put(ApiServer + "/api/admin/update-profile/", formData, {});
       const responseDat = response.data;
       if (responseDat) {
-
-
         alert("Profile is Updated");
-        //handleCloseProfile()
-
-
-
       }
-
       console.log("profile data");
-      // ... do something with the response data
     } catch (error) {
-      // Handle error
-      // console.error(error);
       alert("Your old Password Wrong");
-      // console.log("profilebb error",error.data);
-      // ... handle the error
     }
   };
   const handleSubmit = (event) => {
-    event.preventDefault(); // Prevent default form submission
-
-    // Extract form data from event.target or formik.values
+    event.preventDefault();
     console.log("submit clieck", formik.values.password);
     const access_token = localStorage.getItem("access_token");
-
 
     const formData = {
       occupation: event.target.occupation.value,
@@ -125,9 +71,6 @@ export const UserUpdate = ({ onOpenUserProfile, handleCloseProfile }) => {
       password: formik.values.password,
       password2: formik.values.password,
       userid:access_token,
-
-
-      // ...other form fields
     };
 
     updateProfileData(formData);
@@ -192,30 +135,21 @@ export const UserUpdate = ({ onOpenUserProfile, handleCloseProfile }) => {
     return false; // Return undefined if validation passes
   };
   return (
-    <div className="flex flex-col w-6/12 space-y-2  py-0 -mt-0 pr-5">
-      <div className="self-end">
-        <AiOutlineClose
-          className="self-end text-xs cursor-pointer"
-          onClick={onOpenUserProfile}
-        />
+    <div className="flex flex-col w-3/12 space-y-2  py-4 -mt-4 pr-2 bg-white">
+       <div className="flex flex-row">
+        <h3 className="flex-1 text-center m-0">Edit Settings</h3>
+        <div className="flex-1 flex justify-end">
+          <AiOutlineClose
+            className="self-end text-xs cursor-pointer"
+            onClick={onOpenUserProfile}
+          />
+        </div>
       </div>
       <div className=" flex flex-col items-start  space-y-5  bg-white px-5 py-8">
         <form
           onSubmit={formik.handleSubmit}
           className="flex flex-col gap-5 justify-start w-full "
         >
-          <InputWithIcon
-            type="email"
-            icon={true}
-            placeholder="Adresse email"
-            width="w-full"
-            name="email"
-            onChange={formik?.handleChange}
-            onBlur={formik?.handleBlur}
-            value={responseData?.email || ""}
-            errors={formik?.errors?.email}
-            touched={formik?.touched?.email}
-          />
           <InputWithIcon
             type="password"
             placeholder="Choisissez votre mot de passe"

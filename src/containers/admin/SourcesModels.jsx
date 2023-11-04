@@ -1,22 +1,15 @@
 import { useState, useEffect } from "react";
-import Button from "../../Components/Button/Button";
+import axios from "axios";
+
 import NavBtn from "../../Components/Button/NavBtn";
 import Navbar from "../../Components/navbar/Navbar";
 import AttentionNote from "../../Components/AttentionNote/AttentionNote";
-import {
-  InputWithIcon,
-  SimpleInput,
-} from "../../Components/InputTag/InputWithLabel";
 import { SideBtn } from "./SideBtn";
 import React, { useRef } from 'react';
-import { AddFileAction, UpdateSubcriberAction } from "../../redux/actions/AdminActions";
-import { useLocation } from "react-router-dom";
 import { SubUnsubUsers } from "../chat/SubUnsubUsers";
-import { SubscriptionModal } from "../../Components/modal/SubscriptionModal";
+import { Faq } from "../chat/faq";
+import { AboutUs } from "../chat/aboutUs";
 import { ApiServer } from "../../ApiConstant";
-import { Client, Databases, Query } from "appwrite";
-import axios from "axios";
-import { saveAs } from 'file-saver';
 
 const SourcesModels = () => {
   const [temperatureValue, setTemperatureValue] = useState(0.7);
@@ -25,42 +18,16 @@ const SourcesModels = () => {
   const [frequencyPenalty, setfrequencyPenalty] = useState(2);
   const [presencePenalty, setpresencePenalty] = useState(2);
   const [modelName, setmodelName] = useState();
-  const fileInputRef = useRef(null);
-
-  const [selectedFileNames, setSelectedFileNames] = useState([]);
   const [NumberofSubcriber, setNumberofSubcriber] = useState("10");
   const [NumberofUnsubcriber, setNumberofUnsubcriber] = useState("3");
   const [showModal, setShowModal] = useState(false);
   const [subscribed, setSubscribed] = useState(null);
   const [subsInfoModal, setSubsInfoModal] = useState(true);
-  const [filePath, setFilePath] = useState("");
-  const [fileExists, setFileExists] = useState(false);
   const [showDiv, setShowDiv] = useState(false);
-
 
   const [showFaqs, setShowFaqs] = useState(false);
   const [showUserProfile, setShowUserProfile] = useState(false);
   const [showAboutUs, setShowAboutUs] = useState(false);
-  const progressBar = document.getElementById('progress-bar-fill');
-  const client = new Client();
-
-  client
-      .setEndpoint('https://cloud.appwrite.io/v1')
-      .setProject('64b4cb0d1b60dd5e3a99');
-
-  const databases = new Databases(client);
-
-  const exportUsersToCSV = async () => {
-    const access_token = localStorage.getItem('access_token');
-    axios.get(ApiServer+'/api/admin/user-export-csv/', { responseType: 'blob' })
-    .then(response => {
-      const blob = new Blob([response.data], { type: 'text/csv' });
-      saveAs(blob, 'users.csv');
-    })
-    .catch(error => {
-      console.log(error)
-    });
-  }
 
   useEffect(() => {
     if (showAboutUs || showFaqs || showUserProfile) {
@@ -74,25 +41,6 @@ const SourcesModels = () => {
       setShowUserProfile(false);
     }
   }, [showModal]);
-
-  const checkFilePath = () => {
-    const fs = require("fs");
-    fs.access(filePath, fs.constants.F_OK, (err) => {
-      if (err) {
-        setFileExists(false);
-      } else {
-        setFileExists(true);
-      }
-    });
-  };
-
-  const handleInputChangee = (event) => {
-    setFilePath(event.target.value);
-  };
-
-  const handleBrowseClickk = () => {
-    checkFilePath();
-  };
 
   useEffect(() => {
     const value = localStorage.getItem("access_token");
@@ -126,33 +74,41 @@ const SourcesModels = () => {
     fetchparameterData();
   }, []);
 
-
-  const handleBrowseClick = () => {
-    fileInputRef.current.click();
-  };
-
-  const handleFileChange = (event) => {
-    const selectedFiles = event.target.files;
-    const fileNames = Array.from(selectedFiles).map((file) => file.name);
-    setSelectedFileNames(fileNames);
-  };
-
   useEffect(() => {
-    const promise = databases.getDocument('64b5432b9e32fda9235a', '64b6a57a8ca13cf4ab29', '1');
-    promise.then(function (response) {
-      setNumberofSubcriber(response.subcriber);
-      setNumberofUnsubcriber(response.unsubcriber);
-  }, function (error) {
-      console.log(error);
-  });
+    const fetchPermissionData = async() => {
+      try {
+        const response = await axios.get(ApiServer + '/api/admin/permissions/');
+        const permissionData = response.data.permissions;
+        if (permissionData) {
+          setNumberofSubcriber(permissionData.subscriber);
+          setNumberofUnsubcriber(permissionData.unsubscriber);
+        }
+      } catch (error) {
+        console.log(error);
+        console.log("Parameter load  error");
+      }
+    }
+    fetchPermissionData();
   }, []);
 
-  const handleSubmitForSubcriber = (e) => {
+  const handleSubmitForSubcriber = async(e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
-    const subcriber = formData.get('subcriber');
-    const unsubcriber = formData.get('unsubcriber');
-    databases.updateDocument('64b5432b9e32fda9235a', '64b6a57a8ca13cf4ab29', '1',{"subcriber":subcriber,"unsubcriber":unsubcriber});
+    const requestBody = new FormData();
+    requestBody.append('subscriber', formData.get('subcriber'));
+    requestBody.append('unsubscriber', formData.get('unsubcriber'));
+    try {
+      const response = await axios.put(ApiServer + '/api/admin/permissions/', requestBody);
+      const permissionData = response.data.permissions;
+      if (permissionData) {
+        setNumberofSubcriber(permissionData.subscriber);
+        setNumberofUnsubcriber(permissionData.unsubscriber);
+      }
+      alert('Data updated successfully')
+    } catch (error) {
+      console.log(error);
+      alert('Something went wrong while updating the data')
+    }
   };
 
   const putDataforparameter = async (e) => {
@@ -190,6 +146,10 @@ const SourcesModels = () => {
   const handleSubmitForParameter = (e) => {
     e.preventDefault();
     putDataforparameter(e.target)
+  };
+
+  const handleCloseProfile = (id) => {
+    setShowUserProfile(false);
   };
 
   return (
@@ -397,27 +357,18 @@ const SourcesModels = () => {
               onOpenFaqs={() => setShowFaqs(!showFaqs)}
               onOpenAboutUs={() => setShowAboutUs(!showAboutUs)}
             />
-          ) : (
-            subscribed &&
-            showModal && (
-              <SubUnsubUsers
-                onOpenModal={() => setShowModal(!showModal)}
-                type={1}
-                onOpenSignUp={() => setShowUserProfile(!showUserProfile)}
-                onOpenFaqs={() => setShowFaqs(!showFaqs)}
-                onOpenAboutUs={() => setShowAboutUs(!showAboutUs)}
-              />
-            )
-          )}
+          ) : subscribed && showModal ? (
+            <SubUnsubUsers
+              onOpenModal={() => setShowModal(!showModal)}
+              type={1}
+              onOpenSignUp={() => setShowUserProfile(!showUserProfile)}
+              onOpenFaqs={() => setShowFaqs(!showFaqs)}
+              onOpenAboutUs={() => setShowAboutUs(!showAboutUs)}
+            />
+          ) : null}
           {showFaqs && <Faq onOpenFaqs={() => setShowFaqs(!showFaqs)} />}
           {showAboutUs && (
             <AboutUs onOpenAboutUs={() => setShowAboutUs(!showAboutUs)} />
-          )}
-          {showUserProfile && (
-            <UserUpdate
-              onOpenUserProfile={() => setShowUserProfile(!showUserProfile)}
-              handleCloseProfile={handleCloseProfile}
-            />
           )}
         </div>
       </div>

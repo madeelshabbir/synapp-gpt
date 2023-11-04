@@ -2,13 +2,15 @@ import { AiOutlineClose } from "react-icons/ai";
 
 export const Faq = ({ onOpenFaqs }) => {
   return (
-    <div className="flex flex-col w-4/12 space-y-2  py-0 -mt-0 pr-5">
-      <div className="self-end">
-      <AiOutlineClose
-        className="self-end text-xs cursor-pointer"
-        onClick={onOpenFaqs}
-      />
-
+    <div className="flex flex-col w-3/12 space-y-2  py-4 -mt-4 pr-2 bg-white">
+     <div className="flex flex-row">
+        <h3 className="flex-1 text-center m-0">FAQs</h3>
+        <div className="flex-1 flex justify-end">
+          <AiOutlineClose
+            className="self-end text-xs cursor-pointer"
+            onClick={onOpenFaqs}
+          />
+        </div>
       </div>
       <div className=" flex flex-col space-y-5  items-center bg-white px-4 py-8 overflow-y-auto">
 

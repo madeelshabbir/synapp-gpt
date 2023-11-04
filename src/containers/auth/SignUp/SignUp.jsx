@@ -30,7 +30,7 @@ export const SignUp = ({ formData, onNextStep ,onPreviousStep}) => {
       }
     }
       catch (error) {
-        console.error(error.response.data.errors.user);
+        console.log(error.response.data.errors.user);
     }
   }
 

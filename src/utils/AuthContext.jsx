@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
       localStorage.setItem("username", accountDetails.email);
       setUser(accountDetails);
     } catch (error) {
-      console.error(error);
+      console.log(error);
       setError("Connexion / signing in is not working");
     }
     setLoading(false);

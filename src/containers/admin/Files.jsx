@@ -1,17 +1,14 @@
 import React, { useEffect, useState, useRef } from "react";
+import axios from "axios";
+
 import Navbar from "../../Components/navbar/Navbar";
-import Button from "../../Components/Button/Button";
 import AttentionNote from "../../Components/AttentionNote/AttentionNote";
 import NavBtn from "../../Components/Button/NavBtn";
 import { SubUnsubUsers } from "../chat/SubUnsubUsers";
 import { Faq } from "../chat/faq";
 import { AboutUs } from "../chat/aboutUs";
 import { SideBtn } from "./SideBtn";
-import {
-  InputWithIcon,
-  SimpleInput,
-} from "../../Components/InputTag/InputWithLabel";
-import axios from "axios";
+import { InputWithIcon } from "../../Components/InputTag/InputWithLabel";
 import { ApiServer } from "../../ApiConstant";
 
 const Files = () => {
@@ -100,6 +97,10 @@ const Files = () => {
 
   const handleBrowseClick = () => {
     fileInputRef.current.click();
+  };
+
+  const handleCloseProfile = (id) => {
+    setShowUserProfile(false);
   };
 
   return (
@@ -205,12 +206,6 @@ const Files = () => {
         {showFaqs && <Faq onOpenFaqs={() => setShowFaqs(!showFaqs)} />}
         {showAboutUs && (
           <AboutUs onOpenAboutUs={() => setShowAboutUs(!showAboutUs)} />
-        )}
-        {showUserProfile && (
-          <UserUpdate
-            onOpenUserProfile={() => setShowUserProfile(!showUserProfile)}
-            handleCloseProfile={handleCloseProfile}
-          />
         )}
       </div>
     </div>

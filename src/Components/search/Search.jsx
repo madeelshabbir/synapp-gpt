@@ -5,8 +5,8 @@ import { ApiServer } from "../../ApiConstant";
 
 // document.getElementById('datatable-search-input').addEventListener('input', (e) => {
 //   //instance.input-group(e.target.value);
- 
- 
+
+
 //   console.log("value",e.target.value)
 //   console.log("service")
 
@@ -39,31 +39,31 @@ const Search = () => {
     const fetchfileData = async () => {
       try {
         const response = await axios.get(ApiServer + '/api/admin/get-file/', {
-        
+
         });
-  
+
         const filedata = response.data;
         if (filedata) {
-        
+
           setSearchResults(filedata);
           setOriginalResults(filedata);
-         
-         
+
+
         }
-  
-  
-  
-  
+
+
+
+
         // ... do something with the response data
       } catch (error) {
         // Handle error
-        console.error(error);
+        console.log(error);
         console.log("file load  error");
-       
+
         // ... handle the error
       }
     };
-  
+
     fetchfileData();
   }, []);
   const positionAbsolute = {
@@ -75,11 +75,11 @@ const Search = () => {
     width:'390px',
     padding:'10px 10px',
     border:' 1px solid #f3f6f7',
-    
-  
+
+
   };
- 
-   
+
+
   return (
     <div>
       <div className="relative">

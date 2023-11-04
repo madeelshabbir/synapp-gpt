@@ -78,7 +78,7 @@ export const NewPass = () => {
       promise.then(function (response) {
         console.log("sucesss", response);
         alert("Check Your Email")
-       
+
         //navigate('/confirm-password')
         // Success
       }, function (error) {
@@ -141,7 +141,7 @@ export const NewPass = () => {
               Il vous sera demander pour vous connecter.
             </p>
             {/* <p className="text-textgray text-center text-lg py-5">
-              
+
             </p> */}
             {/* {error && <p className="text-textgray text-center text-lg py-5 style={{ color: 'red' }}">{error.non_field_errors}</p>} */}
 

@@ -16,7 +16,7 @@ export const SubUnsubUsers = ({
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col w-3/12 space-y-2  py-4 -mt-4 pr-2">
+    <div className="flex flex-col w-3/12 space-y-2  py-4 -mt-4 pr-2 bg-white">
       <div className="self-end">
         <AiOutlineClose
           className="self-end text-xs cursor-pointer"
@@ -24,7 +24,7 @@ export const SubUnsubUsers = ({
         />
       </div>
       {access_token != null && (
-        <div className="flex flex-col space-y-2">
+        <div className="flex flex-col space-y-2 items-center">
           <NavBtn
             text="Settings"
             width="200px"

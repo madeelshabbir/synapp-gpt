@@ -23,7 +23,7 @@ export const ConfirmPass = () => {
   const [secretid,setsecretid]=useState(null)
 
   const navigate = useNavigate()
- 
+
 const client = new Client();
 useEffect(() => {
   // Call the function to extract userid and secretid when the component mounts
@@ -40,47 +40,25 @@ const extractUserIdAndSecretId = (search) => {
   setuserid(userId);
   setsecretid(secretId);
   // Do whatever you need to do with userId and secretId
-  
+
 };
 
 
 const account = new Account(client);
 
-client 
+client
       .setEndpoint('https://cloud.appwrite.io/v1')
       .setProject('64b4cb0d1b60dd5e3a99');
 
-
-  //const dispatch_ = useDispatch();
-  // const {error} = useSelector(state => state.forgetPassword);
-  // const navigate = useNavigate();
-
-  
-  //const {forgetdata} = useSelector((state) => state.forgetPassword);
-  
-
- 
-  //USE-EFFECT
-  // useEffect(() => {
-  //   if (forgetdata) {
-  //     navigate("/login");
-  //     console.log("forgetdata")
-  //   }
-   
-  //    else {
-     
-  //     console.log("not forget")
-  //   }
-  // }, [forgetdata]);
   const formik = useFormik({
     enableReinitialize: true,
     initialValues: {
-    
+
       password: "",
       confirm_password: "",
     },
     validationSchema: Yup.object({
-    
+
       password: Yup.string()
         .matches(/[A-Z]/, "At least one uppercase letter is required.")
         .matches(/[0-9]/, "At least one digit is required.")
@@ -99,16 +77,16 @@ client
     onSubmit: async (values) => {
       console.log(values);
       console.log("passsword hai doskr")
-     
+
       // const form = document.getElementById("forgetpass");
       // const formData = new FormData(form);
-     
+
       const password=values.password
       console.log("Password",password)
       const password2=values.confirm_password
 
-      
-      
+
+
       const promise = account.updateRecovery(userid, secretid,password, password);
 
       promise.then(function (response) {
@@ -119,13 +97,13 @@ client
           alert("Password has been Changed")
           navigate('/login')
 
-          
+
       }, function (error) {
           console.log(error); // Failure
       });
-      
+
      //dispatch_(forgetpassword(email,password,password2));
-      
+
     },
   });
 
@@ -180,19 +158,19 @@ client
               Il vous sera demander pour vous connecter.
             </p>
             {/* <p className="text-textgray text-center text-lg py-5">
-              
+
             </p> */}
             {/* {error && <p className="text-textgray text-center text-lg py-5 style={{ color: 'red' }}">{error.non_field_errors}</p>} */}
-            
+
           </div>
 
           {/* form  */}
           <div className="px-5 space-y-4 mx-auto flex flex-col items-start">
-            <form 
+            <form
               onSubmit={formik.handleSubmit}
               className="flex flex-col items-center space-y-3"
             >
-              
+
               <InputWithIcon
                 type="password"
                 placeholder="Nouveau mot de passe"
@@ -217,7 +195,7 @@ client
                 errors={formik?.errors?.confirm_password}
                 touched={formik?.touched?.confirm_password}
               />
-              
+
             </form>
 
             {/* checkbox  */}
@@ -265,7 +243,7 @@ client
               onFunctionCalled={formik.handleSubmit}
                 icon={<HiArrowNarrowRight size={25} />}
               />
-            
+
           </div>
         </div>
 
