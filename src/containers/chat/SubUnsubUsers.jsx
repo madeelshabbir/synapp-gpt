@@ -26,12 +26,6 @@ export const SubUnsubUsers = ({
       {access_token != null && (
         <div className="flex flex-col space-y-2 items-center">
           <NavBtn
-            text="Settings"
-            width="200px"
-            bgcolor="#F4F2F2"
-            onFunctionCalled={onOpenSignUp}
-          />
-          <NavBtn
             text="FAQ"
             width="200px"
             bgcolor="#F4F2F2"
@@ -54,7 +48,7 @@ export const SubUnsubUsers = ({
       )}
 
       {access_token == null && (
-        <div className="flex flex-col space-y-2">
+        <div className="flex flex-col space-y-2 items-center">
           <NavBtn
             text="FAQ"
             width="200px"

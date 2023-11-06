@@ -45,6 +45,8 @@ export const ChatComponent = () => {
 
   const SubmitQuestion = async (formData) => {
     try {
+      var btn = document.getElementById('submit-question');
+      btn.disabled = true;
       const response = await axios.post(`${apiServer}/api/admin/questions/`,
         formData,
       );
@@ -62,6 +64,7 @@ export const ChatComponent = () => {
         };
         setChatWith((prevState) => [...prevState, newMessage]);
       }
+      btn.disabled = false;
       fetchChatData();
     }
     catch (error) {

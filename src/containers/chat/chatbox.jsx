@@ -178,7 +178,7 @@ export const ChatBox = ({
           <button
             type="submit"
             className="cursor-pointer font-semibold rounded-md h-7 w-28 text-sm md:text-normal  bg-aqua"
-
+            id="submit-question"
           >
             Envoyer
           </button>
