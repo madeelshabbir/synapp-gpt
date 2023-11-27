@@ -102,7 +102,7 @@ export const SignUpDefault = ({ formData, onNextStep }) => {
         <div className="w-1/2 flex flex-col justify-between space-y-8 xl:space-y-10 max-h-[85vh] py-5 ">
           {/* heading and description  */}
           <div className="flex flex-col space-y-2 items-center">
-            <div className="text-sm text-center text-textgray">1/3</div>
+            <div className="text-sm text-center text-textgray">1/2</div>
             <div className="text-3xl text-center font-bold">
               Entrez votre adresse email
             </div>

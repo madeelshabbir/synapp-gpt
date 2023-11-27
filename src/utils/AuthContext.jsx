@@ -37,6 +37,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("access_token");
     localStorage.removeItem("username");
     setError(null);
+    navigate('/login');
   }
 
   const checkUserStatus = async () => {

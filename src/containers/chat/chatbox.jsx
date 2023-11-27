@@ -90,7 +90,7 @@ export const ChatBox = ({
 
                           <div
                             ref={messagesEndRef}
-                            className={`px-4 py-1.5  rounded-md ${
+                            className={`p-4  rounded-full ${
                               items?.message_by !== user
                                 ? "bg-textSenderBG"
                                 : "bg-textUserBG"
@@ -166,14 +166,14 @@ export const ChatBox = ({
         className=" py-10 px-5 w-full "
       >
         <div className="p-5 h-16 w-full  flex  rounded-md border border-gray-300  justify-between items-center">
-          <textarea
-            type="text"
-            name="question"
-            ref={newMessage}
-            onKeyDown={handleKeyDown}
-            className="outline-none w-full bg-transparent  border-0  placeholder:text-gray-extraLight text-sm Exo-Regular resize-none"
-            placeholder="Write your message here..."
-          />
+        <input
+          type="text"
+          name="question"
+          ref={newMessage}
+          onKeyDown={handleKeyDown}
+          className="outline-none w-full bg-transparent border-0 placeholder:text-gray-extraLight text-sm Exo-Regular"
+          placeholder="Write your message here..."
+        />
 
           <button
             type="submit"

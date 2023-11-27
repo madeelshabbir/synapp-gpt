@@ -462,7 +462,7 @@ export const ChatComponent = () => {
                   ref={promptRef}
                   key={index}
                   onClick={() => onSelectPrompt(item)}
-                  className={`text-sm w-full font-medium px-4 bg-white py-2 rounded-md flex space-x-2`}
+                  className={`text-sm w-full font-medium px-4 bg-white py-2 rounded-full flex space-x-2`}
                 >
                   {index === promptSelected && editPromptSelected ? (
                     <div className="flex space-x-1">

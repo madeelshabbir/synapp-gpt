@@ -36,7 +36,7 @@ export const InputWithIcon = ({
           onChange={onChange}
           onBlur={onBlur}
           value={value}
-          className={` rounded-lg p-2 w-full text-sm outline-none ${
+          className={` rounded-full p-2 w-full text-sm outline-none ${
             inputValue ? "bg-chatBg" : "bg-inputBg"
           } `}
         />
@@ -167,7 +167,7 @@ export const InputWithEmoji = ({ image, placeholder, bgcolor, width,type, name,v
         onChange={onChange}
         placeholder={placeholder}
         style={{ width: `${width === "w-full" ? "80%" : "390px"}` }}
-        className={`bg-inputBg rounded-xl p-2 text-sm outline-none`}
+        className={`bg-inputBg rounded-full p-2 text-sm outline-none`}
 
       />
     </div>

@@ -15,6 +15,7 @@ import React, { useEffect } from "react";
 
 export const SignUp = ({ formData, onNextStep ,onPreviousStep}) => {
   const navigate = useNavigate();
+  const apiServer = import.meta.env.VITE_REACT_APP_API_URL;
   const Previous = e => {
     e.preventDefault();
     onPreviousStep()
@@ -22,7 +23,7 @@ export const SignUp = ({ formData, onNextStep ,onPreviousStep}) => {
 
   const registerUser = async (userInfo) => {
     try {
-      const response = await axios.post('http://127.0.0.1:8000/api/users',
+      const response = await axios.post(`${apiServer}/api/users`,
         userInfo,
       );
       if (response.status == 201) {
@@ -70,7 +71,7 @@ export const SignUp = ({ formData, onNextStep ,onPreviousStep}) => {
         <div className="flex flex-col items-center justify-center w-1/2 space-y-8 pb-10">
           {/* heading and description  */}
           <div className="flex flex-col space-y-2 items-center">
-            <div className="text-sm text-center text-textgray">2/3</div>
+            <div className="text-sm text-center text-textgray">2/2</div>
             <h1 className="text-3xl text-center font-bold w-8/12">
               Une dernière chose, dites-nous qui vous êtes
             </h1>
@@ -99,8 +100,31 @@ export const SignUp = ({ formData, onNextStep ,onPreviousStep}) => {
               type="text"
             />
             <div className="flex flex-col space-y-2 ">
-              <InputWithCheckbox  required ='true' name="cgu" text="J’ai lu et j’accepte les conditions générales (CGU) " />
-              <InputWithCheckbox  required ='true' name="pdp" text="J’ai lu et j’accepte la Politique de confidentialité des données personnelles " />
+            <InputWithCheckbox
+              required='true'
+              name="cgu"
+              text={
+                <>
+                  J’ai lu et j’accepte les{' '}
+                  <a href="https://www.synapp-messaging.com/utility-pages/conditions-generales-dutilisation" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'underline', fontWeight: 'bold' }}>
+                    conditions générales (CGU)
+                  </a>
+                </>
+              }
+            />
+            <InputWithCheckbox
+              required='true'
+              name="pdp"
+              text={
+                <>
+                  J’ai lu et j’accepte la{' '}
+                  <a href="https://www.synapp-messaging.com/utility-pages/politique-generale-de-protection-des-donnees-a-caractere-personnel" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'underline', fontWeight: 'bold' }}>
+                    Politique de confidentialité des données personnelles
+                  </a>
+                </>
+              }
+            />
+
             </div>
           </form>
 

@@ -31,13 +31,11 @@ useEffect(() => {
 }, [location.search]);
 
 const extractUserIdAndSecretId = (search) => {
-  const searchParams = new URLSearchParams(search);
-
-  const userId = searchParams.get('userid');
-  const secretId = searchParams.get('secretid');
+  search = search.split('&')
+  const userId = search[0].split('=')[2];
+  const secretId = search[1].split('=')[1]
   setuserid(userId);
   setsecretid(secretId);
-
 };
 
 
@@ -73,17 +71,15 @@ client
     }),
     onSubmit: async (values) => {
       console.log(values);
-      console.log("passsword hai doskr")
 
       // const form = document.getElementById("forgetpass");
       // const formData = new FormData(form);
 
       const password=values.password
-      console.log("Password",password)
       const password2=values.confirm_password
 
 
-
+      alert('hi')
       const promise = account.updateRecovery(userid, secretid,password, password);
 
       promise.then(function (response) {

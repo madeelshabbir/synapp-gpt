@@ -42,14 +42,12 @@ export const NewPass = () => {
     }),
     onSubmit: async (values) => {
       console.log(values);
-      console.log("passsword hai doskr")
       const email = values.email
       console.log("email", email)
       const promise = account.createRecovery(email, `${import.meta.env.VITE_REACT_APP_APPWRITE_API_URL}/confirm-password`);
-
       promise.then(function (response) {
         console.log("sucesss", response);
-        alert("Check Your Email")
+        alert("Check Your Email");
       }, function (error) {
         console.log("error hai", error); // Failure
         alert("Your Email Does Not Exist or Invalid")
@@ -132,10 +130,12 @@ export const NewPass = () => {
           <div className="flex justify-center">
             <NavBtn
               text="Valider"
-              bgcolor="#F0F2F3"
-              color="#CDD6D7"
+              bgcolor={isFormValid() ? "#a1feda" : "#F0F2F3"}
+              color={isFormValid() ? "black" : "#CDD6D7"}
+              disabled={!formik.dirty || formik.isSubmitting|| !formik.isValid}
               onFunctionCalled={formik.handleSubmit}
-              icon={<HiArrowNarrowRight size={25} />}
+              icon={<HiArrowNarrowRight size={25}
+               />}
             />
 
           </div>
