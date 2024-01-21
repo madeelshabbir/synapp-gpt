@@ -27,7 +27,7 @@ export const SignUpFinalScr = () => {
           {/* button  */}
           <div className="flex justify-center py-8">
             <NavLink
-              to="/login"
+              to="/"
               className={({ isActive, isPending }) =>
                 isPending ? "pending" : isActive ? "bg-aqua rounded-xl" : ""
               }
