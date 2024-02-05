@@ -41,15 +41,11 @@ export const NewPass = () => {
 
     }),
     onSubmit: async (values) => {
-      console.log(values);
       const email = values.email
-      console.log("email", email)
       const promise = account.createRecovery(email, `${import.meta.env.VITE_REACT_APP_APPWRITE_API_URL}/confirm-password`);
       promise.then(function (response) {
-        console.log("sucesss", response);
         alert("Check Your Email");
       }, function (error) {
-        console.log("error hai", error); // Failure
         alert("Your Email Does Not Exist or Invalid")
       });
     },

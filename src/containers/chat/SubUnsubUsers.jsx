@@ -16,7 +16,7 @@ export const SubUnsubUsers = ({
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col w-3/12 space-y-2  py-4 -mt-4 pr-2 bg-white">
+    <div className="flex flex-col w-3/12 space-y-2  py-4 -mt-4 pr-2 bg-white rounded-2xl mt-[20px]">
       <div className="self-end">
         <AiOutlineClose
           className="self-end text-xs cursor-pointer"
@@ -42,7 +42,7 @@ export const SubUnsubUsers = ({
             text="Sign out"
             width="200px"
             bgcolor="#F4F2F2"
-            onFunctionCalled={logoutUser}
+            onFunctionCalled={() => logoutUser(navigate)}
           />
         </div>
       )}

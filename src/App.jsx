@@ -16,8 +16,6 @@ import { AuthProvider } from './utils/AuthContext'
 function App() {
   const username=localStorage.getItem("username")
   const access_token=localStorage.getItem("access_token")
-  console.log("username",username)
-  console.log("access",access_token)
 
   return (
     <BrowserRouter>

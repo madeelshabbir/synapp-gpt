@@ -30,7 +30,6 @@ export const LoginEmail = () => {
         navigate('/sourcesmodels')
       }
       else{
-        console.log("user dat",user.email)
         navigate('/chat')
       }
     }

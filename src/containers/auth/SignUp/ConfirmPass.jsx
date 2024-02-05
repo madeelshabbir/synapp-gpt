@@ -70,20 +70,15 @@ client
         .oneOf([Yup.ref("password"), null], "Password must match"),
     }),
     onSubmit: async (values) => {
-      console.log(values);
-
       // const form = document.getElementById("forgetpass");
       // const formData = new FormData(form);
 
       const password=values.password
       const password2=values.confirm_password
 
-
-      alert('hi')
       const promise = account.updateRecovery(userid, secretid,password, password);
 
       promise.then(function (response) {
-          console.log("updated",response); // Success
           localStorage.removeItem('passwordid');
           localStorage.removeItem('passworduserid');
           console.log("Password has been Changed");

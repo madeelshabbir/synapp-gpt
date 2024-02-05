@@ -55,14 +55,12 @@ export const UserUpdate = ({ onOpenUserProfile, handleCloseProfile }) => {
       if (responseDat) {
         alert("Profile is Updated");
       }
-      console.log("profile data");
     } catch (error) {
       alert("Your old Password Wrong");
     }
   };
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("submit clieck", formik.values.password);
     const access_token = localStorage.getItem("access_token");
 
     const formData = {
@@ -75,7 +73,6 @@ export const UserUpdate = ({ onOpenUserProfile, handleCloseProfile }) => {
     };
 
     updateProfileData(formData);
-    console.log("Final profiel data", formData);
   };
 
   const formik = useFormik({
@@ -108,7 +105,6 @@ export const UserUpdate = ({ onOpenUserProfile, handleCloseProfile }) => {
         .oneOf([Yup.ref("password"), null], "Password must match"),
     }),
     onSubmit: async (values) => {
-      console.log("all_values_data", values);
     },
   });
 

@@ -82,7 +82,7 @@ const UserTable = () => {
           <AttentionNote />
         </div>
 
-        <div className="w-full p-10">
+        <div className="w-full h-screen p-10">
           <div className="flex justify-end">
             <NavBtn text="Export users in CSV" bgcolor="#A1FEDA" onFunctionCalled={exportUsersToCSV} />
           </div>

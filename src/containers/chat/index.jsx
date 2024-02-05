@@ -134,6 +134,8 @@ export const ChatComponent = () => {
     } else {
       setNumberofSubcriber(permissionData.subscriber);
     }
+
+    return permissionData;
   };
 
   useEffect(() => {
@@ -149,9 +151,9 @@ export const ChatComponent = () => {
               fetchChatData();
             }
           }
-          fetchCountOfUsers();
-          setTextt(`${count}/${NumberofUnsubcriber} messages restants`);
-          setCheck(NumberofUnsubcriber);
+          const perData = await fetchCountOfUsers();
+          setTextt(`${count}/${perData.unsubscriber} messages restants`);
+          setCheck(perData.unsubscriber);
         } catch (error) {
           console.log("Error fetching IP address:", error);
         }

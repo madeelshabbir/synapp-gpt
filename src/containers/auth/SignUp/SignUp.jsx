@@ -45,7 +45,6 @@ export const SignUp = ({ formData, onNextStep ,onPreviousStep}) => {
 
     if (is_cgu === null || is_pdp === null) {
       alert("Please select Checkbox");
-      console.log("checkalert");
     } else {
       const normalizeCheckbox = (value) => (value === 'on' ? 'True' : 'False');
 

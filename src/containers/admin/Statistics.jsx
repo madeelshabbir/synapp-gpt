@@ -98,7 +98,7 @@ const Statistics = () => {
     <div className="h-screen">
       <Navbar onOpenModal={() => setShowModal(!showModal)} />
       <div className="bg-bgCremo flex">
-        <div className="w-64 flex flex-col justify-center space-y-[320px] p-2">
+        <div className="w-64 flex flex-col justify-between p-2">
           <div className="top-0 flex flex-col justify-center items-center">
             <div>
               <SideBtn />

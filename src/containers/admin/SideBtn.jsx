@@ -11,7 +11,6 @@ export const SideBtn = () => {
   const handleClick = () => {
     // Perform actions on button click
 
-    console.log("Button clicked");
    // dispatch(ListUserAction());
   };
   return (

@@ -41,7 +41,6 @@ export const FormMainControl = () => {
 
   const handleSubmit = () => {
     // Perform form submission logic with the final form data
-    console.log("in main files",formData);
   };
 
   return (
@@ -71,7 +70,7 @@ export const FormMainControl = () => {
     </>
   );
 };
-  
+
 
 
 
