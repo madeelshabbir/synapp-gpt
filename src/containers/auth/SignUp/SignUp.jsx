@@ -12,9 +12,11 @@ import axios from "axios";
 
 
 import React, { useEffect } from "react";
+import { useAuth } from "../../../utils/AuthContext";
 
 export const SignUp = ({ formData, onNextStep ,onPreviousStep}) => {
   const navigate = useNavigate();
+  const { loginUser } = useAuth();
   const apiServer = import.meta.env.VITE_REACT_APP_API_URL;
   const Previous = e => {
     e.preventDefault();
@@ -27,7 +29,7 @@ export const SignUp = ({ formData, onNextStep ,onPreviousStep}) => {
         userInfo,
       );
       if (response.status == 201) {
-        navigate("/finalscr");
+        return true;
       }
     }
       catch (error) {
@@ -35,7 +37,7 @@ export const SignUp = ({ formData, onNextStep ,onPreviousStep}) => {
     }
   }
 
-  const handleNext = () => {
+  const handleNext = async () => {
     const form = document.getElementById("RegisterForm");
     const newFormData = new FormData(form);
     let is_cgu = newFormData.get("cgu");
@@ -57,7 +59,11 @@ export const SignUp = ({ formData, onNextStep ,onPreviousStep}) => {
 
       const userInfo = { name, email, password, profession, speciality, is_cgu, is_pdp };
 
-      registerUser(userInfo);
+      const success = await registerUser(userInfo);
+      if (success) {
+        await loginUser({email, password});
+        navigate("/finalscr");
+      }
     }
   };
 
