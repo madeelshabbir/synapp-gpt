@@ -28,9 +28,7 @@ export const SignUp = ({ formData, onNextStep ,onPreviousStep}) => {
       const response = await axios.post(`${apiServer}/api/users`,
         userInfo,
       );
-      if (response.status == 201) {
-        return true;
-      }
+      return response.status == 201;
     }
       catch (error) {
         console.log(error.response.data.errors.user);
