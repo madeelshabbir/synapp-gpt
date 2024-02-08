@@ -77,7 +77,7 @@ const SourcesModels = () => {
   useEffect(() => {
     const fetchPermissionData = async() => {
       try {
-        const response = await axios.get(`${apiServer}/api/admin/permissions/`);
+        const response = await axios.get(`${apiServer}/api/admin/permissions/?timestamp=${Date.now()}`);
         const permissionData = response.data.permissions;
         if (permissionData) {
           setNumberofSubcriber(permissionData.subscriber);
