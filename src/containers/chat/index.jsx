@@ -127,7 +127,7 @@ export const ChatComponent = () => {
   };
 
   const fetchCountOfUsers = async () => {
-    const resp = await axios.get(`${apiServer}/api/admin/permissions/`);
+    const resp = await axios.get(`${apiServer}/api/admin/permissions/?timestamp=${Date.now()}`);
     const permissionData = resp.data.permissions;
     if (!subscribed) {
       setNumberofUnsubcriber(permissionData.unsubscriber);

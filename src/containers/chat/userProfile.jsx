@@ -97,7 +97,6 @@ export const UserUpdate = ({ onOpenUserProfile, handleCloseProfile }) => {
           "At least one special character is required."
         )
         .min(8, "Minimum 8 characters required.")
-        .max(12, "Maximum 12 characters.")
         .required("Password Required"),
 
       confirm_password: Yup.string()
