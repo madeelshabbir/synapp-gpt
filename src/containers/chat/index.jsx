@@ -74,7 +74,7 @@ export const ChatComponent = () => {
 
   const fetchChatData = async () => {
     let data;
-    const resp = await axios.get(`${apiServer}/api/admin/question?query=${user}`);
+    const resp = await axios.get(`${apiServer}/api/admin/question?query=${user}&timestamp=${Date.now()}`);
     setcount(resp.data.questions.total);
     data = resp.data.questions.documents;
     let prompt_array = [];
